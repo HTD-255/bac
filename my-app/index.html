@@ -115,6 +115,45 @@
       </div>
     </div>
   </nav>
+  
+  <!-- Sub Navigation for Ship Statistics -->
+  <div id="sub-nav" class="bg-light border-bottom" style="display: none;">
+    <div class="container-fluid py-3">
+      <div class="row g-3">
+        <div class="col-md-4">
+          <div class="card text-center border-success">
+            <div class="card-body">
+              <h5 class="card-title text-success">
+                <i class="bi bi-ship"></i> Tàu Hoạt Động
+              </h5>
+              <p class="card-text display-6 fw-bold" id="active-ships-count">0</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card text-center border-warning">
+            <div class="card-body">
+              <h5 class="card-title text-warning">
+                <i class="bi bi-anchor"></i> Tàu Neo Đậu
+              </h5>
+              <p class="card-text display-6 fw-bold" id="docked-ships-count">0</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card text-center border-danger">
+            <div class="card-body">
+              <h5 class="card-title text-danger">
+                <i class="bi bi-exclamation-triangle-fill"></i> Tàu SOS
+              </h5>
+              <p class="card-text display-6 fw-bold" id="sos-ships-count">0</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
   <div id="auth-interface">
     <form id="auth-form">
       <input type="text" id="secret" placeholder="Your Azure Maps primary key" required>

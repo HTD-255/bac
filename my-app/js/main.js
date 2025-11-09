@@ -1431,6 +1431,43 @@ function drawShips(shipsData, statuss) {
 //--- IGNORE ---
 
 
+// Function to update ship statistics in the sub-navigation
+function updateShipStatistics(shipsData) {
+  if (!Array.isArray(shipsData) || shipsData.length === 0) {
+    // If no data, set all counts to 0
+    document.getElementById('active-ships-count').textContent = '0';
+    document.getElementById('docked-ships-count').textContent = '0';
+    document.getElementById('sos-ships-count').textContent = '0';
+    return;
+  }
+
+  let activeCount = 0;
+  let dockedCount = 0;
+  let sosCount = 0;
+
+  shipsData.forEach(ship => {
+    // Check SOS status first (SOS ships should be counted in SOS category)
+    const sosStatus = Number(ship.sos) || Number(ship.SOS) || 0;
+    if (sosStatus === 1) {
+      sosCount++;
+    } else {
+      // Check regular status: 1 = active, others = docked
+      const status = Number(ship.statuss);
+      if (status === 1) {
+        activeCount++;
+      } else {
+        dockedCount++;
+      }
+    }
+  });
+
+  // Update the DOM elements
+  document.getElementById('active-ships-count').textContent = activeCount;
+  document.getElementById('docked-ships-count').textContent = dockedCount;
+  document.getElementById('sos-ships-count').textContent = sosCount;
+}
+
+
 ws.onopen = () => {
   loadingMain.hide();
   console.log('Đã kết nối với server WebSocket.');
@@ -1446,6 +1483,9 @@ ws.onmessage = event => {
   drawShips(locationData);
   // re-apply any active filter after updating features
   if (typeof applyShipFilter === 'function') applyShipFilter(shipFilterState);
+  
+  // Update ship statistics in sub-nav
+  updateShipStatistics(locationData);
 
 };
 
@@ -1471,6 +1511,10 @@ window.addEventListener('DOMContentLoaded', () => {
   const authInterface = document.getElementById('auth-interface');
   if (authInterface) authInterface.style.display = 'none';
   document.getElementById('map-container').style.display = 'block';
+  
+  // Show sub-navigation when map is displayed
+  const subNav = document.getElementById('sub-nav');
+  if (subNav) subNav.style.display = 'block';
 
   // Add behavior to the tileset buttons
   document.querySelectorAll('.layer-btn').forEach((btn) => {
