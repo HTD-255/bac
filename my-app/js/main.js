@@ -1617,6 +1617,27 @@ window.addEventListener('DOMContentLoaded', () => {
     });
   })();
 
+  // Load initial ship positions from HTTP API (fallback if WebSocket is slow/fails)
+  (function loadInitialShips() {
+    fetch('http://localhost:3000/api/ship')
+      .then(r => {
+        if (!r.ok) throw new Error('Failed to load ships');
+        return r.json();
+      })
+      .then(shipsData => {
+        console.log('Initial ships loaded:', shipsData.length);
+        // Draw all ships on initial load
+        drawShips(shipsData);
+        // Update statistics
+        updateShipStatistics(shipsData);
+        // Apply any active filter
+        if (typeof applyShipFilter === 'function') applyShipFilter(shipFilterState);
+      })
+      .catch(err => {
+        console.warn('Could not load initial ships (will wait for WebSocket):', err);
+      });
+  })();
+
   // add toggle button behavior: cycle through showing status 1, status 2, and all
   const toggleBtn = document.getElementById('toggle-ships-btn');
   if (toggleBtn) {
