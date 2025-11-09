@@ -1540,6 +1540,35 @@ window.addEventListener('DOMContentLoaded', () => {
   const subNav = document.getElementById('sub-nav');
   if (subNav) subNav.style.display = 'block';
 
+  // Setup sub-navigation toggle functionality
+  const subNavToggle = document.getElementById('sub-nav-toggle');
+  const subNavContent = document.getElementById('sub-nav-content');
+  
+  if (subNavToggle && subNavContent) {
+    // Load saved state from localStorage (default: expanded)
+    const isCollapsed = localStorage.getItem('subNavCollapsed') === 'true';
+    if (isCollapsed) {
+      subNavContent.classList.add('collapsed');
+      subNavToggle.classList.add('collapsed');
+    }
+    
+    subNavToggle.addEventListener('click', function() {
+      const isCurrentlyCollapsed = subNavContent.classList.contains('collapsed');
+      
+      if (isCurrentlyCollapsed) {
+        // Expand
+        subNavContent.classList.remove('collapsed');
+        subNavToggle.classList.remove('collapsed');
+        localStorage.setItem('subNavCollapsed', 'false');
+      } else {
+        // Collapse
+        subNavContent.classList.add('collapsed');
+        subNavToggle.classList.add('collapsed');
+        localStorage.setItem('subNavCollapsed', 'true');
+      }
+    });
+  }
+
   // Add behavior to the tileset buttons
   document.querySelectorAll('.layer-btn').forEach((btn) => {
     btn.addEventListener('click', () => {
