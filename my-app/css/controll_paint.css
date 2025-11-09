@@ -1,0 +1,39 @@
+
+#modal-controll  .modal-dialog {
+  transition: transform 0.5s ease-out !important;
+  transform: translateX(-50%) ;
+    position: fixed; 
+    left:0;
+    top: 60px;
+    margin: 0; /* Loại bỏ margin mặc định */
+}
+
+#modal-controll .modal-content {
+    width: 25vw;
+    height: 93vh; /* Chiều cao tùy chỉnh, ví dụ: 95% chiều cao màn hình */
+    border-radius: 10px; /* Bo góc tùy chỉnh */
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3); /* Đổ bóng tùy chỉnh */
+}
+
+#modal-controll.show .modal-dialog {
+  transform: translateX(10%) ;
+}
+#modal-detail  .modal-dialog {
+  transition: transform 0.5s ease-out !important;
+  transform: translateX(0%) ;
+    position: fixed; 
+    left:25vw;
+    top: 60px;
+    margin: 0; /* Loại bỏ margin mặc định */
+}
+
+#modal-detail .modal-content {
+    width: 70vw;
+    height: 93vh; /* Chiều cao tùy chỉnh, ví dụ: 95% chiều cao màn hình */
+    border-radius: 10px; /* Bo góc tùy chỉnh */
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3); /* Đổ bóng tùy chỉnh */
+}
+
+#modal-detail.show .modal-dialog {
+  transform: translateX(10%) ;
+}

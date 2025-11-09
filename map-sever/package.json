@@ -1,0 +1,18 @@
+{
+  "dependencies": {
+    "@tailwindcss/cli": "^4.1.14",
+    "cors": "^2.8.5",
+    "docxtemplater": "^3.66.6",
+    "dotenv": "^17.2.2",
+    "express": "^5.1.0",
+    "fs": "^0.0.1-security",
+    "libreoffice-convert": "^1.7.0",
+    "mammoth": "^1.11.0",
+    "mssql": "^11.0.1",
+    "path": "^0.12.7",
+    "pizzip": "^3.2.0",
+    "puppeteer": "^24.24.1",
+    "tailwindcss": "^4.1.14",
+    "ws": "^8.18.3"
+  }
+}

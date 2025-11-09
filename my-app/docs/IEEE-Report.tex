@@ -1,0 +1,140 @@
+% IEEE-style technical report for 'ShipMap' project
+% Generated: 2025-11-09
+\documentclass[conference]{IEEEtran}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[vietnamese,english]{babel}
+\usepackage{graphicx}
+\usepackage{url}
+\usepackage{amsmath}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{caption}
+\usepackage{subcaption}
+
+\title{ShipMap: Hệ thống hiển thị vị trí tàu biển và dữ liệu chuyến biển}
+\author{%
+\IEEEauthorblockN{Nhóm Phát triển}
+\IEEEauthorblockA{Dự án nội bộ — my-app\\
+Email: developer@example.com}
+}
+
+\begin{document}
+\selectlanguage{vietnamese}
+\maketitle
+
+\begin{abstract}
+Báo cáo kỹ thuật này mô tả thiết kế, kiến trúc và các quyết định triển khai cho ứng dụng bản đồ tàu biển ("ShipMap"). Ứng dụng sử dụng OpenLayers để hiển thị các điểm tàu, hải trình và các chi tiết chuyến biển, kết hợp với giao diện modal để trình bày dữ liệu chi tiết. Tài liệu đi qua các thành phần hệ thống, mô tả UI, luồng dữ liệu, các lựa chọn về style và những khuyến nghị kiểm thử & tối ưu hoá.
+\end{abstract}
+
+\begin{IEEEkeywords}
+OpenLayers, bản đồ, tàu biển, UI, kỹ thuật phần mềm, GIS, WebMapping
+\end{IEEEkeywords}
+
+\section{Giới thiệu}
+Ứng dụng ShipMap cho phép người dùng quan sát vị trí tàu hiện tại, xem chi tiết chuyến biển, tìm kiếm theo ID tàu (bao gồm cả tàu không hoạt động) và hiển thị cảnh báo SOS. Mục tiêu là cung cấp một giao diện trực quan cho giám sát hoạt động khai thác hải sản.
+
+Báo cáo này trình bày các phần chính: yêu cầu chức năng, kiến trúc hệ thống, thiết kế giao diện (UI), chi tiết triển khai chính, kiểm thử và hướng phát triển tiếp theo.
+
+\section{Yêu cầu chức năng}
+Các yêu cầu chính:
+\begin{itemize}
+  \item Hiển thị vị trí tàu trên bản đồ với màu/kiểu khác nhau theo trạng thái (status).
+  \item Hỗ trợ tìm kiếm tàu theo ID, bao gồm cả tàu không hoạt động.
+  \item Hiển thị chi tiết chuyến biển trong modal (thu/thả, loài khai thác, bản truyền tải).
+  \item Hiển thị cảnh báo SOS (đặc biệt, hiện là icon SOS tĩnh; trước đó đã có lựa chọn nhấp nháy được thử nghiệm).
+  \item Lưu cache danh sách tàu phía client để truy vấn nhanh.
+\end{itemize}
+
+\section{Kiến trúc hệ thống}
+Hệ thống là ứng dụng web frontend tĩnh (HTML/JS/CSS) với các API backend cung cấp dữ liệu tàu, chuyến biển và hải trình.
+
+\subsection{Thành phần chính}
+\begin{itemize}
+  \item Frontend: OpenLayers (map), Bootstrap 5 (UI), Vanilla JS modules.
+  \item Các file chính: \texttt{js/main.js}, \texttt{js/controll.js}, \texttt{index.html}, \texttt{login.html}.
+  \item Dữ liệu tĩnh: \texttt{data/species.json}, \texttt{data/vn_geo.json}.
+  \item Tài nguyên: \texttt{public/icon/*.svg} (bao gồm \texttt{sos.svg}).
+\end{itemize}
+
+\subsection{Luồng dữ liệu}
+Dữ liệu vị trí tàu có thể tới frontend qua WebSocket (ví dụ WebSocket server tại ws://localhost:8080) hoặc qua các API REST. Các yêu cầu chi tiết chuyến biển và hải trình được gọi trên demand.
+
+\section{Thiết kế giao diện (UI)}
+Thiết kế UI tuân theo nguyên tắc rõ ràng, ít nhiễu, với các điểm sau:
+
+\subsection{Bản đồ và Layers}
+\begin{itemize}
+  \item Tile layer base được lấy từ dịch vụ tiles (Microsoft/Azure) theo lựa chọn.
+  \item \texttt{vectorLayerShip} chứa điểm tàu, sử dụng layer-level style function \texttt{shipStyleFunction} để tính màu, kích thước theo zoom và \texttt{statuss}. Lớp này có z-index cao (\texttt{setZIndex(20000)}) để luôn hiển thị trên cùng.
+  \item \texttt{vectorLayerHaiTrinh} lưu hải trình (LineString + điểm).
+  \item \texttt{vectorLayerVn} chứa biên giới Việt Nam (dashed border).
+\end{itemize}
+
+\subsection{Marker và SOS}
+\begin{itemize}
+  \item Non-SOS markers: circle with radius = clamp(round(zoom * 1.2), 4..20), fill color depends on \texttt{statuss}.
+  \item SOS: hiện sử dụng icon \texttt{sos.svg}. Icon được scale sao cho đường kính icon ~ 2 * radius marker để kích thước khớp với marker thông thường.
+\end{itemize}
+
+\subsection{Modal và bảng}
+Các modal (Bootstrap) sử dụng cấu trúc tab cho chi tiết chuyến biển (Thu/Thả, Loài quý, Bản truyền tải). Bảng sử dụng render client-side với helper để format ngày, số và ánh xạ mã loài sang tên bằng \texttt{data/species.json}.
+
+\section{Chi tiết triển khai}
+\subsection{Các hàm quan trọng}
+\begin{itemize}
+  \item \texttt{drawShips(shipsData, statuss)}: chuẩn hoá dữ liệu đầu vào, tạo Feature từ vị trí và gán thuộc tính \texttt{statuss}, \texttt{sos}.
+  \item \texttt{shipStyleFunction(feature, resolution)}: tính toán zoom, radius, chọn style (circle hoặc icon), và dùng cache \texttt{__shipStyleCache} để tránh tạo lại style liên tục.
+  \item \texttt{applyShipFilter(state)}: áp filter hiển thị theo \texttt{statuss}; tuy nhiên feature có \texttt{sos===1} luôn hiển thị.
+  \item API wrappers trong \texttt{js/controll.js}: \texttt{DanhSachTau}, \texttt{TimTauTheoId}, \texttt{DanhSachChuyenBien}, \texttt{Locations}.
+\end{itemize}
+
+\subsection{Tối ưu hoá}
+Đã thêm cache client cho toàn bộ danh sách tàu (\texttt{window.__ALL_SHIPS_CACHE}) để trả về danh sách nhanh khi tìm kiếm rỗng. Sử dụng cache trong \texttt{shipStyleFunction} để tái sử dụng \texttt{Style} objects.
+
+\section{Bảo mật và triển khai}
+\begin{itemize}
+  \item Hiện token lưu trong \texttt{localStorage.jwt} (demo). Khuyến nghị dùng cookie HttpOnly cho production.
+  \item WebSocket sử dụng ws:// cho môi trường dev, dùng wss:// cho production.
+\end{itemize}
+
+\section{Kiểm thử}
+\subsection{Hướng kiểm thử chức năng}
+\begin{enumerate}
+  \item Kiểm tra render marker cho các trạng thái 0/1/2 ở nhiều zoom.
+  \item Kiểm tra tìm kiếm theo ID (active/inactive) trả kết quả chính xác.
+  \item Kiểm tra modal chi tiết (Thu/Thả, Loài quý, Truyền tải) hiển thị đúng dữ liệu.
+  \item Kiểm tra SOS: icon hiển thị và luôn visible khi lọc.
+\end{enumerate}
+
+\subsection{Hiệu năng}
+Kiểm thử tải nhiều feature (thousands) tại các zoom thấp. Nếu chậm, cân nhắc clustering hoặc server-side tiling.
+
+\section{Kết luận và hướng phát triển}
+Bản đồ hiện đáp ứng các yêu cầu cơ bản: hiển thị vị trí tàu, hiển thị chi tiết chuyến biển và xử lý SOS. Các bước tiếp theo đề xuất:
+\begin{itemize}
+  \item Thêm clustering để cải thiện hiệu năng hiển thị số lượng lớn tàu.
+  \item Thay token storage sang cookie HttpOnly.
+  \item Thêm unit tests cho các hàm render và parsing data.
+  \item Tạo tài liệu vận hành (deployment guide) và bổ sung diagram kiến trúc hệ thống.
+\end{itemize}
+
+\section*{Acknowledgment}
+Cảm ơn nhóm phát triển và những phản hồi từ người dùng thử nghiệm.
+
+\begin{thebibliography}{1}
+\bibitem{openlayers} OpenLayers, "OpenLayers: High-performance, feature-packed library for maps," \url{https://openlayers.org/}.
+\bibitem{ieeetran} IEEEtran LaTeX class, \url{https://ctan.org/pkg/ieeetran}.
+\end{thebibliography}
+
+\appendix
+\section{Appendix A: Chỉ dẫn sửa đổi nhanh}
+Các chỉnh sửa thường gặp và vị trí file:
+\begin{itemize}
+  \item Thay đổi màu marker: \texttt{js/main.js} trong \texttt{shipStyleFunction} (tham số \texttt{fillColor}).
+  \item Thay đổi kích thước SOS icon: sửa \texttt{imgPx} hoặc công thức scale trong \texttt{shipStyleFunction}.
+  \item Tài nguyên icon: \texttt{public/icon/}.
+\end{itemize}
+
+\end{document}

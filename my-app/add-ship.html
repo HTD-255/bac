@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Thêm thông tin tàu — ShipMap</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="/css/add-ship.css">
+</head>
+<body>
+  <nav class="navbar navbar-light bg-light mb-4">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="/">ShipMap</a>
+      <div>
+        <a class="btn btn-outline-secondary" href="/">Quay lại</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container">
+    <h1 class="h4 mb-3">Thêm thông tin tàu</h1>
+
+    <div id="alert-placeholder"></div>
+
+    <div class="add-ship-card">
+      <form id="add-ship-form" class="row g-3 needs-validation form-row-gap" novalidate>
+        <div class="row">
+          <div class="col-12 mb-3">
+            <h2 class="h6 mb-0">Thông tin chính</h2>
+            <p class="form-text">Nhập thông tin tàu tương ứng với bảng <code>dbo.ship</code>.</p>
+          </div>
+        </div>
+      <!-- Primary key in DB is [id] -->
+      <div class="col-md-4">
+        <label for="id" class="form-label">ID (id)</label>
+        <input type="text" class="form-control" id="id" name="id" required>
+        <div class="invalid-feedback">Vui lòng nhập ID (khóa chính).</div>
+      </div>
+
+      <div class="col-md-4">
+        <label for="ship_name" class="form-label">Tên tàu (ship_name)</label>
+        <input type="text" class="form-control" id="ship_name" name="ship_name">
+      </div>
+
+      <div class="col-md-4">
+        <label for="id_chu_tau" class="form-label">id_chu_tau (số)</label>
+        <input type="number" class="form-control" id="id_chu_tau" name="id_chu_tau">
+      </div>
+
+      <div class="col-md-4">
+        <label for="ten_chu_tau" class="form-label">Tên chủ tàu (ten_chu_tau)</label>
+        <input type="text" class="form-control" id="ten_chu_tau" name="ten_chu_tau">
+      </div>
+
+      <div class="col-md-4">
+        <label for="ten_thuyen_truong" class="form-label">Tên thuyền trưởng (ten_thuyen_truong)</label>
+        <input type="text" class="form-control" id="ten_thuyen_truong" name="ten_thuyen_truong">
+      </div>
+
+      <div class="col-md-4">
+        <label for="so_dang_ki_tau" class="form-label">Số đăng kí tàu (so_dang_ki_tau)</label>
+        <input type="text" class="form-control" id="so_dang_ki_tau" name="so_dang_ki_tau">
+      </div>
+
+      <div class="col-md-3">
+        <label for="chieu_dai_tau" class="form-label">Chiều dài tàu (chieu_dai_tau)</label>
+        <input type="number" step="0.1" class="form-control" id="chieu_dai_tau" name="chieu_dai_tau">
+      </div>
+
+      <div class="col-md-3">
+        <label for="tong_cong_suat" class="form-label">Tổng công suất (tong_cong_suat)</label>
+        <input type="number" step="0.1" class="form-control" id="tong_cong_suat" name="tong_cong_suat">
+      </div>
+
+      <div class="col-md-4">
+        <label for="so_giay_phep" class="form-label">Số giấy phép (so_giay_phep)</label>
+        <input type="text" class="form-control" id="so_giay_phep" name="so_giay_phep">
+      </div>
+
+      <div class="col-md-4">
+        <label for="thoi_han" class="form-label">Thời hạn (thoi_han)</label>
+        <input type="datetime-local" class="form-control" id="thoi_han" name="thoi_han">
+      </div>
+
+      <div class="col-md-4">
+        <label for="nghe_phu_1" class="form-label">Nghe phụ 1 (nghe_phu_1)</label>
+        <input type="text" class="form-control" id="nghe_phu_1" name="nghe_phu_1">
+      </div>
+
+      <div class="col-md-4">
+        <label for="nghe_phu_2" class="form-label">Nghe phụ 2 (nghe_phu_2)</label>
+        <input type="text" class="form-control" id="nghe_phu_2" name="nghe_phu_2">
+      </div>
+
+      <div class="col-md-3">
+        <label for="chieu_dai_vang_cau" class="form-label">Chiều dài vàng câu (chieu_dai_vang_cau)</label>
+        <input type="number" step="0.1" class="form-control" id="chieu_dai_vang_cau" name="chieu_dai_vang_cau">
+      </div>
+
+      <div class="col-md-3">
+        <label for="so_luoi_cau" class="form-label">Số lưới/câu (so_luoi_cau)</label>
+        <input type="number" class="form-control" id="so_luoi_cau" name="so_luoi_cau">
+      </div>
+
+      <div class="col-md-3">
+        <label for="chieu_dai_luoi_vay" class="form-label">Chiều dài lưới vây (chieu_dai_luoi_vay)</label>
+        <input type="number" step="0.1" class="form-control" id="chieu_dai_luoi_vay" name="chieu_dai_luoi_vay">
+      </div>
+
+      <div class="col-md-3">
+        <label for="chieu_cao_luoi_vay" class="form-label">Chiều cao lưới vây (chieu_cao_luoi_vay)</label>
+        <input type="number" step="0.1" class="form-control" id="chieu_cao_luoi_vay" name="chieu_cao_luoi_vay">
+      </div>
+
+      <div class="col-md-3">
+        <label for="chu_vi_luoi_chup" class="form-label">Chu vi lưới chụp (chu_vi_luoi_chup)</label>
+        <input type="number" step="0.1" class="form-control" id="chu_vi_luoi_chup" name="chu_vi_luoi_chup">
+      </div>
+
+      <div class="col-md-3">
+        <label for="chieu_cao_luoi_chup" class="form-label">Chiều cao lưới chụp (chieu_cao_luoi_chup)</label>
+        <input type="number" step="0.1" class="form-control" id="chieu_cao_luoi_chup" name="chieu_cao_luoi_chup">
+      </div>
+
+      <div class="col-md-3">
+        <label for="chieu_dai_gieng_phao" class="form-label">Chiều dài giềng phao (chieu_dai_gieng_phao)</label>
+        <input type="number" step="0.1" class="form-control" id="chieu_dai_gieng_phao" name="chieu_dai_gieng_phao">
+      </div>
+
+      <div class="col-md-3">
+        <label for="chieu_dai_luoi_keo" class="form-label">Chiều dài lưới kéo (chieu_dai_luoi_keo)</label>
+        <input type="number" step="0.1" class="form-control" id="chieu_dai_luoi_keo" name="chieu_dai_luoi_keo">
+      </div>
+
+      <div class="col-md-3">
+        <label for="new_latidue" class="form-label">Vĩ độ (new_latidue)</label>
+        <input type="number" step="0.000001" class="form-control" id="new_latidue" name="new_latidue">
+      </div>
+
+      <div class="col-md-3">
+        <label for="new_longtidue" class="form-label">Kinh độ (new_longtidue)</label>
+        <input type="number" step="0.000001" class="form-control" id="new_longtidue" name="new_longtidue">
+      </div>
+
+      <div class="col-md-4">
+        <label for="time_update" class="form-label">Thời điểm cập nhật (time_update)</label>
+        <input type="datetime-local" class="form-control" id="time_update" name="time_update">
+      </div>
+
+      <div class="col-12">
+        <label for="ghi_chu" class="form-label">Ghi chú / thông tin bổ sung</label>
+        <textarea class="form-control" id="ghi_chu" name="ghi_chu" rows="3"></textarea>
+      </div>
+
+        <div class="col-12 d-flex gap-2 mt-3">
+          <button id="submit-btn" type="submit" class="btn btn-primary">Lưu</button>
+          <a class="btn btn-outline-secondary" href="/">Hủy</a>
+        </div>
+      </form>
+    </div>
+
+    <div id="result" class="mt-3"></div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="/js/add-ship.js"></script>
+</body>
+</html>

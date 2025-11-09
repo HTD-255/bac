@@ -1,0 +1,142 @@
+% IEEE-style technical report (Vietnamese)
+% Compile with: pdflatex report.tex; bibtex report; pdflatex report.tex; pdflatex report.tex
+\documentclass[conference]{IEEEtran}
+\usepackage[utf8]{inputenc}
+\usepackage[T5]{fontenc}
+\usepackage[vietnamese,english]{babel}
+\usepackage{graphicx}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\usepackage{cite}
+\usepackage{listings}
+\lstset{basicstyle=\small\ttfamily,breaklines=true}
+
+\title{Báo cáo kỹ thuật: Ứng dụng sinh PDF từ mẫu HTML \thanks{Bản mẫu báo cáo theo chuẩn IEEE}} 
+
+\author{%
+\IEEEauthorblockN{Tên Tác Giả}
+\IEEEauthorblockA{Đơn vị công tác \\
+Email: you@example.com}
+}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Báo cáo này mô tả thiết kế và thực hiện một hệ thống server-side để sinh tài liệu PDF từ mẫu HTML động. Hệ thống lấy dữ liệu từ cơ sở dữ liệu, chèn vào mẫu HTML, xử lý định dạng (ngày/giờ, tọa độ, danh sách loài), và xuất bản bản PDF chuẩn in. Trong báo cáo trình bày kiến trúc, chi tiết cài đặt, những thách thức đã gặp (định dạng thời gian, vùng timezone, nhóm dữ liệu), và kết quả thử nghiệm.
+\end{abstract}
+
+\begin{IEEEkeywords}
+PDF generation, HTML templating, Puppeteer, Node.js, SQL Server, report automation
+\end{IEEEkeywords}
+
+\section{Giới thiệu}
+Tự động hóa sinh báo cáo kỹ thuật và tài liệu hành chính là yêu cầu phổ biến trong nhiều hệ thống quản lý dữ liệu. Hệ thống được mô tả trong báo cáo này cho phép tạo các biểu mẫu in (PDF) từ các mẫu HTML có sẵn, điền dữ liệu động từ cơ sở dữ liệu, và hỗ trợ các bảng phức tạp như bảng khai thác, bảng loài quý, và bảng chuyển tải.
+
+Mục tiêu chính:
+\begin{itemize}
+  \item Tự động sinh PDF từ mẫu HTML
+  \item Hỗ trợ chèn dữ liệu bảng nhiều hàng và nhiều cột động
+  \item Bảo toàn định dạng in (page-breaks, wrapping) và hiển thị chính xác ngày/giờ
+\end{itemize}
+
+\section{Công nghệ và Kiến trúc}
+Hệ thống được triển khai bằng Node.js (Express) kết hợp với thư viện Puppeteer để render HTML sang PDF. Dữ liệu được lưu trữ trên Microsoft SQL Server, truy vấn thông qua driver `mssql` (node-mssql). Kiến trúc tổng quan gồm:
+\begin{itemize}
+  \item Lớp dữ liệu: Stored procedures trả về bộ recordsets (chuyến biển, thu/tha, khai thác, loài quý, truyền tải).
+  \item Lớp xử lý: Backend nhận request, gọi stored procedures, gom nhóm con bằng TVP (table-valued parameter) để giảm round-trip.
+  \item Lớp trình bày: Mẫu HTML (template) với các placeholder (span id, tbody) được server-side thay thế bằng chuỗi HTML.
+  \item Renderer: Puppeteer (headless Chromium) load nội dung và xuất PDF.
+\end{itemize}
+
+\section{Chi tiết thiết kế}
+\subsection{Mẫu HTML và Kỹ thuật ghép dữ liệu}
+Mẫu HTML định nghĩa các span có `id` cho các giá trị đơn (tên, ngày) và ba `tbody` kế tiếp cho các bảng chính. Server tải template, thực hiện thay thế bằng phương pháp regex an toàn (thay thế các `<span id="...">` và `<tbody>`). Các bảng động được sinh bằng cách xây dựng chuỗi `<tr>...</tr>`.
+
+\subsection{Xử lý dữ liệu phức tạp}
+Một số thách thức bao gồm:
+\begin{itemize}
+  \item Ghép mẻ thu/tha theo khóa `me` (mẻ số). Source có thể trả key là number hoặc string -> thực hiện lookup cả hai kiểu.
+  \item Định dạng thời gian: dữ liệu lưu dưới dạng ISO Z (UTC). Hệ thống cần lựa chọn hiển thị UTC hay timezone cục bộ; chú ý không gây lệch ngày do chuyển đổi.
+  \item Gom danh sách con (loai danh bat) cho từng khaiThac hoặc truyenTai bằng TVP để chỉ gọi stored procedure một lần.
+\end{itemize}
+
+\subsection{Top-N và bản in}
+Cột top-5 loài được tính từ mảng loai_danh_bat và hiển thị 5 mục hàng đầu kèm mục còn lại. Tên loài và tên cảng lấy từ file JSON ánh xạ (`species.json`, `cang.json`).
+
+\section{Cài đặt}
+\subsection{Môi trường}
+Phần mềm chính:
+\begin{itemize}
+  \item Node.js 16+
+  \item puppeteer
+  \item mssql (node-mssql)
+  \item Microsoft SQL Server (stored procedures sẵn có)
+\end{itemize}
+
+\subsection{Một số đoạn mã đáng chú ý}
+\begin{lstlisting}[language=JavaScript,caption={Gom thu/tha theo me và lookup an toàn}]
+const thuThaByMe = new Map();
+for (const item of thuThaLuoi) {
+  const key = item.me ?? item.me_so ?? '';
+  if (!key) continue;
+  const pair = thuThaByMe.get(key) || {};
+  if (item.statuss === 0) pair.tha = item;
+  if (item.statuss === 1) pair.thu = item;
+  thuThaByMe.set(key, pair);
+}
+// Khi lookup: thử cả string và Number
+let pair = thuThaByMe.get(meKey);
+if (!pair) pair = thuThaByMe.get(Number(meKey));
+\end{lstlisting}
+
+\subsection{Sinh PDF}
+Sau khi ghép toàn bộ HTML, Puppeteer được gọi:
+\begin{lstlisting}[language=JavaScript]
+const browser = await puppeteer.launch();
+const page = await browser.newPage();
+await page.setContent(pageHtml, { waitUntil: 'networkidle0' });
+const pdf = await page.pdf({ format: 'A4' });
+await browser.close();
+\end{lstlisting}
+
+\section{Kết quả và Đánh giá}
+Hệ thống cho phép xuất bộ mẫu dữ liệu mẫu thành PDF in được với:
+\begin{itemize}
+  \item Bảng khai thác: các mẻ liệt kê, giờ/điểm thả-thu, 5 loài hàng đầu.
+  \item Bảng loài quý: hiển thị thời điểm bắt gặp (ưu tiên thu rồi tha), checkbox trạng thái (disabled) cho thả/kéo/khác và sống/chết/thương.
+  \item Bảng truyền tải: mỗi loài trên một dòng, giữ metadata ở hàng đầu.
+\end{itemize}
+
+Một vài điểm cần kiểm tra:
+\begin{itemize}
+  \item Độ chính xác timezone (quyết định hiển thị UTC hay cục bộ)
+  \item Kết quả PDF khi nội dung rất dài (cần điều chỉnh CSS in để tránh cắt dòng hoặc chia trang không hợp lý)
+\end{itemize}
+
+\section{Kết luận và Công việc tương lai}
+Báo cáo mô tả một giải pháp thực tế để tự động sinh PDF từ template HTML với dữ liệu động. Hướng phát triển:
+\begin{itemize}
+  \item Thêm cấu hình template theo nhiều form (A4 portrait/landscape)
+  \item Hỗ trợ bản dịch tự động và multi-language cho form
+  \item Tối ưu hiệu năng: reuse browser instance, incremental rendering
+\end{itemize}
+
+\section*{Lời cảm ơn}
+Cảm ơn nhóm phát triển và những đóng góp về dữ liệu mẫu, stored procedures và mapping file.
+
+\bibliographystyle{IEEEtran}
+\bibliography{refs}
+
+\appendix
+\section{Appendix: Hướng dẫn biên dịch}
+Biên dịch (Windows/Powershell) với TeX Live/MiKTeX đã cài đặt:
+\begin{verbatim}
+pdflatex report.tex
+bibtex report
+pdflatex report.tex
+pdflatex report.tex
+\end{verbatim}
+
+\end{document}

@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mẫu Nhật Ký Khai Thác Thủy Sản - Mẫu 01</title>
+    <!-- Load Tailwind CSS -->
+<link href="./output.css" rel="stylesheet">
+<style>
+        /* Custom styles for print and form formatting */
+        body {
+            font-family: 'Times New Roman', Times, serif;
+            background-color: #f4f7f9;
+        }
+        .container {
+            max-width: 1000px;
+        }
+        .form-input {
+            border: none;
+            border-bottom: 1px dashed #333;
+            padding: 2px 0;
+            margin-top: -5px;
+            font-size: 0.9rem;
+            width: 100%;
+            background-color: transparent;
+        }
+        .form-label {
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+        .table-header {
+            background-color: #e2e8f0;
+            font-weight: 600;
+            text-align: center;
+        }
+        .table-cell {
+            padding: 4px;
+            border: 1px solid #94a3b8;
+            height: 40px;
+        }
+        @media print {
+            body {
+                background-color: white;
+            }
+            .container {
+                box-shadow: none;
+                margin: 0;
+                padding: 0;
+            }
+            .no-print {
+                display: none;
+            }
+            .table-cell {
+                height: 30px;
+            }
+        }
+    </style>
+</head>
+<body class="p-4 sm:p-8">
+
+    <div class="container mx-auto bg-white p-6 sm:p-8 rounded-lg shadow-xl">
+
+        <!-- Header Section -->
+        <header class="text-center mb-6">
+            <div class="flex justify-between items-start text-sm mb-4">
+                <div class="text-left">
+                    <p class="font-bold">Mẫu số 01</p>
+                </div>
+                <div class="text-right">
+                    <p class="font-bold">TỔNG CỤC THỦY SẢN</p>
+                    <p class="text-xs mt-1">Mã định danh: (ABC-xxxxx-KT-yy-zz)(<span class="text-red-500">*</span>)</p>
+                </div>
+            </div>
+            <h1 class="text-2xl font-extrabold uppercase mb-1 border-b-2 border-gray-400 pb-2">NHẬT KÝ KHAI THÁC THỦY SẢN</h1>
+            <!-- Nghề chính chuyển xuống dưới phần thông tin tàu -->
+        </header>
+
+        <!-- General Ship Information -->
+        <section class="mb-6 space-y-2 text-sm">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-2">
+            <p>NGHỀ CHÍNH: <span id="nghe_chinh">LƯỚI KÉO ĐƠN</span></p>
+                
+            </div>
+             <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-2">
+              <p>1. Họ và tên chủ tàu: <span id="ten_chu_tau">Nguyễn Văn A</span></p>
+                <p>2. Họ và tên thuyền trưởng: <span id="ten_thuyen_truong">Trần Văn B</span></p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-2">
+                <p>3. Số đăng ký tàu: <span id="so_dang_ky_tau">QNg-90345</span></p>
+                <p>4. Chiều dài lớn nhất của tàu: <span id="chieu_dai_tau">25.5</span> m</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-2">
+                <p>5. Tổng công suất máy chính: <span id="tong_cong_suat">850</span> kW</p>
+                <p>6. Số Giấy phép khai thác thủy sản: <span id="so_giay_phep">GP-001/25</span> Thời hạn đến: <span id="thoi_han">14/10/2026</span></p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-2">
+                <p>7. Nghề phụ 1: <span id="nghe_phu1">Lưới rê</span></p>
+                <p>8. Nghề phụ 2: <span id="nghe_phu2">Câu</span></p>
+            </div>
+        </section>
+
+        <!-- Fishing Gear Dimensions -->
+        <section class="mb-6 text-sm">
+            <p class="form-label mb-1">9. Kích thước chủ yếu của ngư cụ (ghi cụ thể theo nghề chính):</p>
+            <div class="pl-4 space-y-1">
+                <p>a) Nghề câu: Chiều dài toàn bộ vàng câu <span id="chieu_dai_vang_cau">15</span> m; Số lưỡi câu: <span id="so_luoi_cau">500</span> lưỡi</p>
+                <p>b) Nghề lưới vây, rê: Chiều dài toàn bộ lưới <span id="chieu_dai_luoi_vay"></span> m; Chiều cao lưới <span id="chieu_cao_luoi_vay"></span> m</p>
+                <p>c) Nghề lưới chụp: Chu vi miệng lưới <span id="chu_vi_luoi_chup"></span> m; Chiều cao lưới <span id="chieu_cao_luoi_chup"></span> m</p>
+                <p>d) Nghề lưới kéo: Chiều dài giềng phao <span id="chieu_dai_gieng_phao">200</span> m; Chiều dài toàn bộ lưới <span id="chieu_dai_luoi_keo">35.5</span> m</p>
+                <p>e) Nghề khác: <span id="nghe_khac"></span></p>
+            </div>
+        </section>
+
+        <!-- Voyage Details -->
+        <section class="mb-8 space-y-2 text-sm">
+            <p class="font-bold">Chuyến biển số: <input type="text" class="form-input w-1/12 text-center" value="06" /> <span class="text-xs">(Ghi chuyến biển thứ mấy trong năm)</span></p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-2">
+                <p>10. Cảng đi: <span id="cang_di">Cảng Sa Kỳ</span></p>
+                <p class="pl-6">Thời gian đi: <span class="italic">Ngày </span><span id="ngay_di" style="display:inline-block;min-width:28px;border-bottom:1px dashed #333;text-align:center;"></span><span class="italic"> tháng </span><span id="thang_di" style="display:inline-block;min-width:28px;border-bottom:1px dashed #333;text-align:center;"></span><span class="italic"> năm </span><span id="nam_di" style="display:inline-block;min-width:36px;border-bottom:1px dashed #333;text-align:center;"></span></p>
+                <p>11. Cảng về: <span id="cang_ve"></span></p>
+                <p class="pl-6">Thời gian cập cảng: <span class="italic">Ngày </span><span id="ngay_ve" style="display:inline-block;min-width:28px;border-bottom:1px dashed #333;text-align:center;"></span><span class="italic"> tháng </span><span id="thang_ve" style="display:inline-block;min-width:28px;border-bottom:1px dashed #333;text-align:center;"></span><span class="italic"> năm </span><span id="nam_ve" style="display:inline-block;min-width:36px;border-bottom:1px dashed #333;text-align:center;"></span></p>
+            </div>
+            <p>12. Ngày nộp nhật ký: <span class="italic">Ngày </span><span id="ngay_nhatky" style="display:inline-block;min-width:28px;border-bottom:1px dashed #333;text-align:center;"></span><span class="italic"> tháng </span><span id="thang_nhatky" style="display:inline-block;min-width:28px;border-bottom:1px dashed #333;text-align:center;"></span><span class="italic"> năm </span><span id="nam_nhatky" style="display:inline-block;min-width:36px;border-bottom:1px dashed #333;text-align:center;"></span> ; Vào Sổ số: <span id="vao_so" style="display:inline-block;min-width:40px;border-bottom:1px dashed #333;text-align:center;"></span></p>
+        </section>
+
+        <!-- Section I: Fishing Activity -->
+        <section class="mb-8">
+            <h2 class="text-lg font-bold uppercase border-b border-gray-400 mb-4 pb-1">I. THÔNG TIN VỀ HOẠT ĐỘNG KHAI THÁC THỦY SẢN</h2>
+
+            <p class="font-semibold mb-2">1. Thông tin mẻ lưới/câu</p>
+            <table class="w-full border-collapse border border-gray-400 text-xs">
+                <thead>
+                    <tr class="table-header">
+                        <td rowspan="2" class="table-cell w-[3%]">Stt</td>
+                        <td rowspan="2" class="table-cell w-[5%]">Mẻ thứ</td>
+                        <td colspan="2" class="table-cell w-[18%]">Thời điểm bắt đầu thả (giờ, phút, ngày, tháng)</td>
+                        <td colspan="2" class="table-cell w-[12%]">Vị trí thả</td>
+                        <td colspan="2" class="table-cell w-[18%]">Thời điểm kết thúc thu (giờ, phút, ngày, tháng)</td>
+                        <td colspan="2" class="table-cell w-[12%]">Vị trí thu</td>
+                        <td colspan="6" class="table-cell">Sản lượng các loài thủy sản chủ yếu**(kg)</td>
+                        <td rowspan="2" class="table-cell w-[7%]">Tổng sản lượng (kg)</td>
+                    </tr>
+                    <tr class="table-header">
+                        <td class="table-cell">Ngày/Tháng</td>
+                        <td class="table-cell">Giờ/Phút</td>
+                        <td class="table-cell">Vĩ độ</td>
+                        <td class="table-cell">Kinh độ</td>
+                        <td class="table-cell">Ngày/Tháng</td>
+                        <td class="table-cell">Giờ/Phút</td>
+                        <td class="table-cell">Vĩ độ</td>
+                        <td class="table-cell">Kinh độ</td>
+                        <td class="table-cell w-[7%]">Loài 1</td>
+                        <td class="table-cell w-[7%]">Loài 2</td>
+                        <td class="table-cell w-[7%]">Loài 3</td>
+                        <td class="table-cell w-[7%]">Loài 4</td>
+                        <td class="table-cell w-[7%]">Loài 5</td>
+                        <td class="table-cell w-[7%]">Loài khác</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Sample Data Row -->
+                    <tr>
+                        <td class="table-cell text-center">1</td>
+                        <td class="table-cell text-center">1</td>
+                        <td class="table-cell text-center">02/10</td>
+                        <td class="table-cell text-center">15:00</td>
+                        <td class="table-cell text-center">14.10N</td>
+                        <td class="table-cell text-center">110.55E</td>
+                        <td class="table-cell text-center">02/10</td>
+                        <td class="table-cell text-center">18:30</td>
+                        <td class="table-cell text-center">14.15N</td>
+                        <td class="table-cell text-center">110.60E</td>
+                        <td class="table-cell text-center">250</td>
+                        <td class="table-cell text-center">150</td>
+                        <td class="table-cell text-center">50</td>
+                        <td class="table-cell text-center">0</td>
+                        <td class="table-cell text-center">0</td>
+                        <td class="table-cell text-center">20</td>
+                        <td class="table-cell text-center font-bold">470</td>
+                    </tr>
+                    <!-- Empty Rows for filling -->
+                    <script>
+                        // Function to generate empty rows
+                        function generateEmptyRows(count) {
+                            const tbody = document.querySelector('table tbody');
+                            for (let i = 0; i < count; i++) {
+                                const row = document.createElement('tr');
+                                for (let j = 0; j < 17; j++) { // 17 columns total
+                                    const cell = document.createElement('td');
+                                    cell.className = 'table-cell';
+                                    if (j === 0) cell.textContent = (i + 2); // Auto-numbering for remaining rows
+                                    row.appendChild(cell);
+                                }
+                                tbody.appendChild(row);
+                            }
+                        }
+                        document.addEventListener('DOMContentLoaded', () => generateEmptyRows(7)); // Generate 7 empty rows
+                    </script>
+                </tbody>
+            </table>
+            <p class="mt-2 text-xs">**Ghi các đối tượng khai thác chính theo từng nghề (Kéo, Rê, Vây, Câu, Chụp…). Đối với các nghề khai thác cá ngừ cần ghi rõ sản lượng của từng loài như: cá ngừ Vây vàng, cá ngừ Mắt to, cá ngừ Vằn (Sọc dưa), cá ngừ khác (Chù, ồ…).</p>
+
+            <p class="font-semibold mt-4 mb-2">2. Thông tin về các loài nguy cấp quý hiếm</p>
+            <p class="text-xs mb-1">Cá voi/Cá heo/Bò biển/Quản đồng/Vích/Đồi mồi dứa/Đồi mồi/Rùa da/Loài khác (Ghi tên cụ thể)</p>
+            
+            <table class="w-full border-collapse border border-gray-400 text-xs">
+                <thead>
+                    <tr class="table-header">
+                        <td rowspan="2" class="table-cell w-[3%]">Stt</td>
+                        <td rowspan="2" class="table-cell w-[5%]">Mẻ</td>
+                        <td rowspan="2" class="table-cell w-[15%]">Loài</td>
+                        <td rowspan="2" class="table-cell w-[15%]">Thời điểm bắt gặp (giờ, phút, ngày, tháng)</td>
+                        <td rowspan="2" class="table-cell w-[10%]">Khối lượng/con (ước tính kg)</td>
+                        <td rowspan="2" class="table-cell w-[10%]">Số lượng ước tính (con)</td>
+                        <td rowspan="2" class="table-cell w-[10%]">Kích thước ước tính (cm)</td>
+                        <td colspan="3" class="table-cell">Bắt gặp trong quá trình khai thác (chọn 1)</td>
+                        <td colspan="3" class="table-cell">Tình trạng bắt gặp (chọn 1)</td>
+                    </tr>
+                    <tr class="table-header">
+                        <td class="table-cell w-[6%]">Thả lưới/câu</td>
+                        <td class="table-cell w-[6%]">Kéo lưới</td>
+                        <td class="table-cell w-[6%]">Khác</td>
+                        <td class="table-cell w-[6%]">Sống</td>
+                        <td class="table-cell w-[6%]">Chết</td>
+                        <td class="table-cell w-[6%]">Bị thương</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Empty rows for filling -->
+                    <tr>
+                        <td class="table-cell text-center">1</td>
+                        <td class="table-cell"><input type="text" class="form-input text-center w-full" style="border-bottom:none;"/></td>
+                        <td class="table-cell"><input type="text" class="form-input text-center w-full" style="border-bottom:none;"/></td>
+                        <td class="table-cell"><input type="text" class="form-input text-center w-full" style="border-bottom:none;"/></td>
+                        <td class="table-cell"><input type="text" class="form-input text-center w-full" style="border-bottom:none;"/></td>
+                        <td class="table-cell"><input type="text" class="form-input text-center w-full" style="border-bottom:none;"/></td>
+                        <td class="table-cell"><input type="text" class="form-input text-center w-full" style="border-bottom:none;"/></td>
+                        <td class="table-cell text-center"><input type="checkbox" name="gap[0]" value="tha" class="checkbox-group-0"></td>
+                        <td class="table-cell text-center"><input type="checkbox" name="gap[0]" value="keo" class="checkbox-group-0"></td>
+                        <td class="table-cell text-center"><input type="checkbox" name="gap[0]" value="khac" class="checkbox-group-0"></td>
+                        <td class="table-cell text-center"><input type="checkbox" name="tt[0]" value="song" class="checkbox-group-1"></td>
+                        <td class="table-cell text-center"><input type="checkbox" name="tt[0]" value="chet" class="checkbox-group-1"></td>
+                        <td class="table-cell text-center"><input type="checkbox" name="tt[0]" value="thuong" class="checkbox-group-1"></td>
+                    </tr>
+                    <tr>
+                        <td class="table-cell text-center">2</td>
+                        <td class="table-cell"><input type="text" class="form-input text-center w-full" style="border-bottom:none;"/></td>
+                        <td class="table-cell"><input type="text" class="form-input text-center w-full" style="border-bottom:none;"/></td>
+                        <td class="table-cell"><input type="text" class="form-input text-center w-full" style="border-bottom:none;"/></td>
+                        <td class="table-cell"><input type="text" class="form-input text-center w-full" style="border-bottom:none;"/></td>
+                        <td class="table-cell"><input type="text" class="form-input text-center w-full" style="border-bottom:none;"/></td>
+                        <td class="table-cell"><input type="text" class="form-input text-center w-full" style="border-bottom:none;"/></td>
+                        <td class="table-cell text-center"><input type="checkbox" name="gap[1]" value="tha" class="checkbox-group-2"></td>
+                        <td class="table-cell text-center"><input type="checkbox" name="gap[1]" value="keo" class="checkbox-group-2"></td>
+                        <td class="table-cell text-center"><input type="checkbox" name="gap[1]" value="khac" class="checkbox-group-2"></td>
+                        <td class="table-cell text-center"><input type="checkbox" name="tt[1]" value="song" class="checkbox-group-3"></td>
+                        <td class="table-cell text-center"><input type="checkbox" name="tt[1]" value="chet" class="checkbox-group-3"></td>
+                        <td class="table-cell text-center"><input type="checkbox" name="tt[1]" value="thuong" class="checkbox-group-3"></td>
+                    </tr>
+                </tbody>
+            </table>
+            <p class="text-xs italic mt-4">Thông tin bổ sung về loài (nếu có): (Về màu sắc loài; thiết bị, thẻ gắn số trên cá thể;…và các thông tin khác nếu có)</p>
+            <textarea class="form-input border-t border-b border-dashed w-full h-16 resize-none mt-1"></textarea>
+        </section>
+
+        <!-- Section II: Transshipment Activity -->
+        <section class="mb-8">
+            <h2 class="text-lg font-bold uppercase border-b border-gray-400 mb-4 pb-1">II. THÔNG TIN VỀ HOẠT ĐỘNG CHUYỂN TẢI (nếu có)</h2>
+
+            <table class="w-full border-collapse border border-gray-400 text-xs">
+                <thead>
+                    <tr class="table-header">
+                        <td rowspan="2" class="table-cell w-[3%]">TT</td>
+                        <td rowspan="2" class="table-cell w-[10%]">Ngày, tháng</td>
+                        <td colspan="2" class="table-cell w-[25%]">Thông tin tàu thu mua/chuyển tải</td>
+                        <td colspan="2" class="table-cell w-[19%]">Vị trí thu mua, chuyển tải</td>
+                        <td colspan="2" class="table-cell w-[23%]">Đã bán/chuyển tải</td>
+                        <td rowspan="2" class="table-cell w-[20%]">Thuyền trưởng tàu thu mua/chuyển tải (ký, ghi rõ họ, tên)</td>
+                    </tr>
+                    <tr class="table-header">
+                        <td class="table-cell">Số đăng ký tàu</td>
+                        <td class="table-cell">Số Giấy phép khai thác</td>
+                        <td class="table-cell">Vĩ độ</td>
+                        <td class="table-cell">Kinh độ</td>
+                        <td class="table-cell">Tên loài thủy sản</td>
+                        <td class="table-cell">Khối lượng (kg)</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Empty rows for filling -->
+                    <tr>
+                        <td class="table-cell text-center">1</td>
+                        <td class="table-cell"></td>
+                        <td class="table-cell"></td>
+                        <td class="table-cell"></td>
+                        <td class="table-cell"></td>
+                        <td class="table-cell"></td>
+                        <td class="table-cell"></td>
+                        <td class="table-cell"></td>
+                        <td class="table-cell"></td>
+                    </tr>
+                    <tr>
+                        <td class="table-cell text-center">2</td>
+                        <td class="table-cell"></td>
+                        <td class="table-cell"></td>
+                        <td class="table-cell"></td>
+                        <td class="table-cell"></td>
+                        <td class="table-cell"></td>
+                        <td class="table-cell"></td>
+                        <td class="table-cell"></td>
+                        <td class="table-cell"></td>
+                    </tr>
+                    <tr>
+                        <td class="table-cell text-center">3</td>
+                        <td class="table-cell"></td>
+                        <td class="table-cell"></td>
+                        <td class="table-cell"></td>
+                        <td class="table-cell"></td>
+                        <td class="table-cell"></td>
+                        <td class="table-cell"></td>
+                        <td class="table-cell"></td>
+                        <td class="table-cell"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Footer/Signature Section -->
+        <footer class="text-right mt-10 text-sm">
+            <div class="mb-4" style="display:inline-block;">
+                <span class="italic">Ngày </span><span id="ngay_nop" style="display:inline-block;min-width:32px;border-bottom:1px dashed #333;text-align:center;"></span>
+                <span class="italic"> tháng </span><span id="thang_nop" style="display:inline-block;min-width:32px;border-bottom:1px dashed #333;text-align:center;"></span>
+                <span class="italic"> năm </span><span id="nam_nop" style="display:inline-block;min-width:40px;border-bottom:1px dashed #333;text-align:center;">2025</span>
+            </div>
+            <p class="font-bold">Thuyền trưởng</p>
+            <p class="text-xs mb-10">(ký, ghi rõ họ và tên)</p>
+            <input type="text" class="form-input w-1/3 text-center font-bold" value="" style="border-bottom: 2px solid #333;" />
+        </footer>
+
+        <!-- Javascript for Checkbox Group (Select only 1 per group) -->
+        <script>
+            function setupExclusiveCheckboxes(className) {
+                const checkboxes = document.querySelectorAll(`input[type="checkbox"].${className}`);
+                checkboxes.forEach(checkbox => {
+                    checkbox.addEventListener('change', function() {
+                        if (this.checked) {
+                            checkboxes.forEach(otherCheckbox => {
+                                if (otherCheckbox !== this) {
+                                    otherCheckbox.checked = false;
+                                }
+                            });
+                        }
+                    });
+                });
+            }
+
+            // Setup for row 1: Bắt gặp (gap[0]) and Tình trạng (tt[0])
+            setupExclusiveCheckboxes('checkbox-group-0');
+            setupExclusiveCheckboxes('checkbox-group-1');
+            
+            // Setup for row 2: Bắt gặp (gap[1]) and Tình trạng (tt[1])
+            setupExclusiveCheckboxes('checkbox-group-2');
+            setupExclusiveCheckboxes('checkbox-group-3');
+            
+            // Add more groups if more rows are added dynamically
+        </script>
+
+    </div>
+</body>
+</html>

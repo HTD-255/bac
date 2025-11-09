@@ -1,0 +1,33 @@
+// 1. Import Bootstrap functions
+// @import "./node_modules/bootstrap/scss/functions";
+//   $primary: #25ec40;
+//   $nav-color:(
+//     "navcolor": #1574d9
+//   );
+//   // Merge the maps
+
+//@import "./node_modules/bootstrap/scss/variables"; // This is where $theme-colors is defined
+@use "./node_modules/bootstrap/scss/bootstrap" as bs with(
+  $primary: #4CAF50,
+  
+);
+.modal.fade .modal-dialog {
+  transition: transform 0.5s ease-out;
+  transform: translateX(150%); // Hiệu ứng ban đầu
+}
+.modal-content{
+  height: 90vh;
+}
+.modal.show .modal-dialog {
+  transform: translateX(130%); // Hiệu ứng khi hiển thị
+}
+$custom:#444daf;
+
+
+  $theme-colors:map-merge(bs.$theme-colors,
+  (
+    "custom": $custom,
+    "navy": #001f3f
+  ));
+
+// $theme-colors:map-merge($theme-colors, $nav-color);

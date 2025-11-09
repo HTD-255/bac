@@ -1,0 +1,34 @@
+/* Lớp phủ chính (Quan trọng nhất) */
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.564); /* Nền mờ, có thể thay đổi màu */
+    z-index: 9999; /* Đảm bảo luôn nằm trên cùng */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* Mặc định ẩn đi */
+    opacity: 0; 
+    visibility: hidden;
+    transition: opacity 0.3s; /* Hiệu ứng mượt mà khi ẩn/hiện */
+    
+    /* Thuộc tính này chặn tất cả tương tác chuột (Clicks) */
+    pointer-events: none; 
+}
+
+/* Hiển thị lớp phủ và kích hoạt chặn tương tác */
+.loading-overlay.active {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: all;
+}
+
+/* CSS cho spinner (Ví dụ đơn giản - bạn có thể dùng SVG/Bootstrap Spinner) */
+.loading-overlay .spinner-border {
+width: 100px;
+height: 100px;
+}
+

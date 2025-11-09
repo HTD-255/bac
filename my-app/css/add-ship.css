@@ -1,0 +1,11 @@
+/* Minimal styles for add-ship page */
+body { background: #f8f9fa; }
+main.container { max-width: 920px; }
+#alert-placeholder { min-height: 1.5rem; }
+
+/* Form layout tweaks */
+.add-ship-card { background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 6px rgba(0,0,0,0.04); }
+.add-ship-card .form-label { font-size: 0.9rem; color: #333; }
+.add-ship-card .form-text { font-size: 0.85rem; color: #666; }
+.form-row-gap { row-gap: 0.75rem; }
+.required-star::after { content: " *"; color: #d00; }

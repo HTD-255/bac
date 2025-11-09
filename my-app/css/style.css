@@ -1,0 +1,36 @@
+#map-container{
+  position: relative;
+}
+#control-panel {
+        position: absolute; /* Quan trọng: Đè lên các phần tử khác */
+        top: 20px;          /* Khoảng cách từ trên xuống */
+        left: 20px;         /* Khoảng cách từ trái sang */
+        z-index: 1000;      /* Quan trọng: Đảm bảo nó nằm trên bản đồ (mặc định z-index thấp) */
+        
+        /* Kiểu dáng */
+        background: rgba(255, 255, 255, 0.9); /* Nền trắng hơi trong suốt */
+        padding: 15px;
+        border-radius: 6px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        font-family: Arial, sans-serif;
+        max-width: 250px;
+    }
+    
+    /* Điều chỉnh vị trí cho Layer Switcher để không bị che */
+    .layer-switcher {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: 999; /* Đảm bảo nó nằm trên bản đồ nhưng dưới control-panel nếu cần */
+        /* ... (Các thuộc tính khác) ... */
+    }
+    .icon_nav{
+      
+       position: absolute;
+        top: 10px;
+        left: 40px;
+        
+        z-index: 999; /* Đảm bảo nó nằm trên bản đồ nhưng dưới control-panel nếu cần */
+        /* ... (Các thuộc tính khác) ... */
+    }

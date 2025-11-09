@@ -1,0 +1,111 @@
+:root{
+	--bg:#f4f7fb;
+	--card:#ffffff;
+	--accent:#2563eb; /* blue-600 */
+	--accent-contrast:#fff;
+	--muted:#6b7280; /* gray-500 */
+	--danger:#ef4444;
+	--radius:12px;
+	--shadow: 0 6px 18px rgba(16,24,40,0.08);
+}
+
+/* Page layout */
+html,body{
+	height:100%;
+	margin:0;
+	font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+	background: linear-gradient(180deg, #eef2ff 0%, var(--bg) 100%);
+	color:#111827;
+}
+
+.login-container{
+	width:100%;
+	max-width:420px;
+	margin: clamp(28px, 6vw, 72px) auto;
+	background:var(--card);
+	border-radius:var(--radius);
+	box-shadow:var(--shadow);
+	padding:28px 28px;
+	box-sizing:border-box;
+	border:1px solid rgba(15,23,42,0.04);
+}
+
+.login-container h2{
+	margin:0 0 18px 0;
+	font-size:20px;
+	letter-spacing:0.2px;
+	color:#0f172a;
+}
+
+form#login-form{
+	display:flex;
+	flex-direction:column;
+	gap:12px;
+}
+
+label{
+	font-size:13px;
+	color:var(--muted);
+	margin-bottom:4px;
+}
+
+input[type="text"], input[type="password"]{
+	height:44px;
+	padding:8px 12px;
+	border-radius:8px;
+	border:1px solid rgba(15,23,42,0.08);
+	background: #fff;
+	box-sizing:border-box;
+	font-size:14px;
+	outline: none;
+	transition: box-shadow .15s ease, border-color .12s ease;
+}
+
+input[type="text"]:focus, input[type="password"]:focus{
+	border-color: rgba(37,99,235,0.9);
+	box-shadow: 0 6px 20px rgba(37,99,235,0.08);
+}
+
+button[type="submit"]{
+	height:44px;
+	border-radius:10px;
+	border:0;
+	background:var(--accent);
+	color:var(--accent-contrast);
+	font-weight:600;
+	cursor:pointer;
+	display:inline-flex;
+	align-items:center;
+	justify-content:center;
+	gap:8px;
+	transition: transform .06s ease, box-shadow .08s ease;
+}
+
+button[type="submit"]:active{ transform: translateY(1px); }
+button[type="submit"]:hover{ box-shadow: 0 6px 18px rgba(37,99,235,0.12); }
+
+#login-error{
+	margin-top:8px;
+	font-size:13px;
+	color:var(--danger);
+}
+
+/* Small screens: make container padding comfortable */
+@media (max-width:420px){
+	.login-container{ margin:20px; padding:18px; }
+}
+
+/* Utility centers */
+.center-screen{
+	min-height:100vh; display:flex; align-items:center; justify-content:center;
+}
+
+/* lightweight focus-visible for accessibility */
+input:focus-visible{ outline: 3px solid rgba(99,102,241,0.08); outline-offset:2px; }
+
+/* subtle helper below form */
+.login-container .helper{ font-size:13px; color:var(--muted); margin-top:12px; }
+
+/* small touches for labels when stacked */
+.login-container label + input{ margin-top:4px; }
+
