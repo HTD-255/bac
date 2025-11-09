@@ -76,7 +76,7 @@ export class Table {
         const td = document.createElement('td');
                 td.classList.add("col")
                 // Đảm bảo giá trị hiển thị là chuỗi (có thể xử lý null/undefined)
-                td = appendChild(value)
+                td.appendChild(value)
     }
     getRowsByIndex(rowIndex) {
         if (!this.tbody) return undefined; // Kiểm tra xem tbody có tồn tại không
