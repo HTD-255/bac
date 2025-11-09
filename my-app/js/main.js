@@ -18,7 +18,7 @@ import Fill from 'ol/style/Fill';
 import Overlay from 'ol/Overlay.js';
 import GeoJSON from 'ol/format/GeoJSON.js';
 import { headers, data, datachuyenBien, headersChuyenBien, Table } from './Table';
-import { download, DanhSachTau, DanhSachChuyenBien, Locations, TimTauTheoId } from './controll';
+import { download, DanhSachTau, DanhSachChuyenBien, Locations, TimTauTheoId } from './Controll';
 import { LoadingOverlay } from './loading';
 // tạo loading và thêm vào body
 const loadingMain = new LoadingOverlay
@@ -26,15 +26,38 @@ document.body.prepend(loadingMain.getElement())
 
 //taoj loading cho dialog
 const loadingShip = new LoadingOverlay("loading-ship")
-// ánh xạ modal
+// ánh xạ modal - lazy initialization to avoid bootstrap timing issues
 var modalDetailEL = document.getElementById('modal-detail');
-var modalDetail = new bootstrap.Modal(modalDetailEL);
+var modalDetail = null;
 
 var modalControllEL = document.getElementById('modal-controll');
-var modalControll = new bootstrap.Modal(modalControllEL);
+var modalControll = null;
 
 var modalInforEL = document.getElementById('modal-info');
-var modalInfor = new bootstrap.Modal(modalInforEL);
+var modalInfor = null;
+
+// Helper function to get or create bootstrap modal instances
+function getModalDetail() {
+  if (!modalDetail && typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+    modalDetail = new bootstrap.Modal(modalDetailEL);
+  }
+  return modalDetail;
+}
+
+function getModalControll() {
+  if (!modalControll && typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+    modalControll = new bootstrap.Modal(modalControllEL);
+  }
+  return modalControll;
+}
+
+function getModalInfor() {
+  if (!modalInfor && typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+    modalInfor = new bootstrap.Modal(modalInforEL);
+  }
+  return modalInfor;
+}
+
 const content = modalControllEL.querySelector(".modal-dialog .modal-content .modal-body #ship-info-display #table-container");
 
 const tableShip = new Table("table-ship")
@@ -202,7 +225,8 @@ const showChuyenBienOnclick = (idShip) => {
 
 const showDetail = (idChuyenBien) => {
   
-  modalDetail.show();
+  const modal = getModalDetail();
+  if (modal) modal.show();
   // tab containers (created in index.html)
   const containerThuTha = modalDetailEL.querySelector('#container-thu-tha');
   const containerLoaiQuy = modalDetailEL.querySelector('#container-loai-quy');
@@ -1697,7 +1721,8 @@ window.addEventListener('DOMContentLoaded', () => {
     } else {
       // Nếu click vào vùng bản đồ trống
       try { popupOverlay.setPosition(undefined); } catch (e) { }
-      modalInfor.hide();
+      const modal = getModalInfor();
+      if (modal) modal.hide();
     }
   });
 });
@@ -1761,7 +1786,8 @@ function showShipInfo(idShip, idChuyenBien) {
         document.getElementById('modal-info-chieu-dai-gieng-phao').textContent = ship.chieu_dai_gieng_phao != null ? ship.chieu_dai_gieng_phao : "Chưa rõ";
         document.getElementById('modal-info-chieu-dai-luoi-keo').textContent = ship.chieu_dai_luoi_keo != null ? ship.chieu_dai_luoi_keo : "Chưa rõ";
       }
-      modalInfor.show();
+      const modal = getModalInfor();
+      if (modal) modal.show();
       loadingMain.hide();
     });
 }
@@ -1885,7 +1911,8 @@ document.addEventListener('DOMContentLoaded', function () {
         duongDiChuyenBien(idChuyenBien);
 
         // Ẩn modal sau khi bấm nút
-        modalInfor.hide();
+        const modal = getModalInfor();
+        if (modal) modal.hide();
       }
     );
   }
