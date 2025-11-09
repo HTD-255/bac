@@ -1351,7 +1351,8 @@ const shipStyleFunction = function(feature, resolution) {
   // If this feature has SOS active, use red ship icon (SOS takes priority)
   if (sos === 1) {
     // Compute scale based on zoom level for consistent sizing
-    const baseScale = Math.max(0.02, Math.min(0.08, zoom * 0.008));
+    // Increased scale factor for better visibility: 0.05 to 0.15 range
+    const baseScale = Math.max(0.05, Math.min(0.15, zoom * 0.015));
     return new Style({
       zIndex: 9999,
       image: new Icon({
@@ -1366,7 +1367,8 @@ const shipStyleFunction = function(feature, resolution) {
   if (__shipStyleCache[key]) return __shipStyleCache[key];
 
   // scale mapping: grow with zoom but clamp
-  const baseScale = Math.max(0.02, Math.min(0.08, zoom * 0.008));
+  // Increased scale factor for better visibility: 0.05 to 0.15 range
+  const baseScale = Math.max(0.05, Math.min(0.15, zoom * 0.015));
   let iconSrc = '/public/icon/ship-yellow.svg'; // default: inactive (yellow)
   if (status === 1) iconSrc = '/public/icon/ship-green.svg'; // active (green)
   else if (status === 2) iconSrc = '/public/icon/ship-red.svg'; // docked/inactive (red)
