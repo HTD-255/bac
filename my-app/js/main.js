@@ -1329,7 +1329,7 @@ vectorLayerShip.setZIndex(20000);
 // Style cache for ship styling per status+zoom
 const __shipStyleCache = Object.create(null);
 
-// Layer style function: compute scale based on current zoom level so markers scale on zoom
+// Layer style function: compute radius based on current zoom level so markers scale on zoom
 const shipStyleFunction = function(feature, resolution) {
   // resolution available; prefer reading zoom from map view if possible
   let zoom = null;
@@ -1348,15 +1348,23 @@ const shipStyleFunction = function(feature, resolution) {
   const status = Number(feature.get('statuss')) || 0;
   const sos = Number(feature.get('sos')) || 0;
   const key = status + '::' + zoom;
-  // If this feature has SOS active, use red ship icon (SOS takes priority)
+  // If this feature has SOS active, compute a dynamic red blinking style (don't cache)
   if (sos === 1) {
-    // Compute scale based on zoom level for consistent sizing
-    const baseScale = Math.max(0.02, Math.min(0.08, zoom * 0.008));
+    // SOS is shown as a static icon (no blinking). Compute the visual size so it
+    // matches non-SOS circle markers. Use the same radius mapping as non-SOS features
+    // (radius = clamp(round(zoom * 1.2), 4..20)). We'll set icon imgSize to 30x30 and
+    // choose scale so icon diameter ~= 2 * radius -> scale = (2*radius)/imgSize.
+    const radiusForIcon = Math.max(4, Math.min(20, Math.round(zoom * 1.2)));
+    const imgPx = 30; // assumed natural size of sos.svg (px). If different, adjust.
+    let iconScaleFromRadius = (2 * radiusForIcon) / imgPx;
+    // clamp to reasonable range to avoid extreme scaling
+    iconScaleFromRadius = Math.max(0.18, Math.min(2.0, iconScaleFromRadius));
     return new Style({
       zIndex: 9999,
       image: new Icon({
-        src: '/public/icon/ship-red.svg',
-        scale: baseScale,
+        src: '/public/icon/sos.svg',
+        imgSize: [imgPx, imgPx],
+        scale: iconScaleFromRadius,
         anchor: [0.5, 0.5],
       })
     });
@@ -1365,17 +1373,17 @@ const shipStyleFunction = function(feature, resolution) {
   // Non-SOS: use cached styles per (status, zoom)
   if (__shipStyleCache[key]) return __shipStyleCache[key];
 
-  // scale mapping: grow with zoom but clamp
-  const baseScale = Math.max(0.02, Math.min(0.08, zoom * 0.008));
-  let iconSrc = '/public/icon/ship-yellow.svg'; // default: inactive (yellow)
-  if (status === 1) iconSrc = '/public/icon/ship-green.svg'; // active (green)
-  else if (status === 2) iconSrc = '/public/icon/ship-red.svg'; // docked/inactive (red)
+  // radius mapping: grow with zoom but clamp
+  const radius = Math.max(4, Math.min(20, Math.round(zoom * 1.2)));
+  let fillColor = 'rgba(255, 0, 0, 0.6)';
+  if (status === 1) fillColor = 'rgba(0, 200, 0, 0.8)';
+  else if (status === 2) fillColor = 'rgba(255, 60, 60, 0.9)';
 
   const s = new Style({
-    image: new Icon({
-      src: iconSrc,
-      scale: baseScale,
-      anchor: [0.5, 0.5],
+    image: new Circle({
+      radius: radius,
+      fill: new Fill({ color: fillColor }),
+      stroke: new Stroke({ color: 'white', width: Math.max(1, Math.round(radius / 8)) }),
     }),
   });
   __shipStyleCache[key] = s;
