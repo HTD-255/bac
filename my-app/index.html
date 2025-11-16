@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="css/custom.css">
   <link rel="stylesheet" href="css/controll_paint.css">
   <link rel="stylesheet" href="css/style.css">
-  <link rel="stylesheet" href="css/loading.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
 
   <style>
     .map {
@@ -108,23 +108,45 @@
       transition: transform 0.3s ease;
     }
 
-    #sub-nav-toggle.collapsed {
-      transform: rotate(180deg);
-    }
+
 
     #sub-nav {
       transition: all 0.3s ease;
+    }
+
+    /* Loading overlay styles */
+    .loading-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 9999;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .loading-overlay.active {
+      display: flex;
+    }
+
+    /* Icon navigation positioning */
+    .icon_nav {
+      position: absolute;
+      bottom: 10px;
+      left: 10px;
+      z-index: 1000;
     }
   </style>
 </head>
 
 <body class="container-fluid">
-  <!-- <div id="loading-overlay" class="loading-overlay">
-    <div class="spinner-border text-success"></div>
-  </div> -->
+
   <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
     <div class="container-fluid">
-      <a class="navbar-brand" href="#">Navbar</a>
+      <a class="navbar-brand" href="#">Bản đồ tàu cá</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
         aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -133,10 +155,6 @@
         <ul class="navbar-nav">
           <li class="nav-item">
             <a class="nav-link active" aria-current="page" href="#">Home</a>
-          </li>
-   
-          <li class="nav-item position-absolute end-0">
-            <a class="nav-link" href="login.html">Log out</a>
           </li>
         </ul>
       </div>
@@ -147,10 +165,10 @@
   <div id="sub-nav" class="bg-light border-bottom" style="display: none;">
     <div class="container-fluid position-relative">
       <!-- Toggle Button -->
-      <button id="sub-nav-toggle" class="btn btn-sm btn-link position-absolute end-0 top-0 mt-2 me-2" 
-              style="z-index: 10; text-decoration: none;" 
+      <button id="sub-nav-toggle" class="btn btn-outline-secondary btn-sm position-absolute end-0 top-0 mt-2 me-2" 
+              style="z-index: 10;" 
               title="Thu gọn/Mở rộng">
-        <i class="bi bi-chevron-up fs-5"></i>
+        <i class="bi bi-chevron-up"></i> Ẩn/Hiện
       </button>
       
       <!-- Collapsible Content -->
@@ -204,10 +222,13 @@
       <button type="button  " id="show_controll" class="btn btn-icon btn-primary" data-bs-toggle="modal"
         data-bs-target="#modal-controll" data-bs-container="body" data-bs-toggle="popover" data-bs-placement="right"
         data-bs-content="Right popover" data-bs-trigger="hover">
-        <img src="/public/icon/search.svg" alt="search">
+        <img src="/search.svg" alt="search">
       </button>
       <button type="button  " id="toggle-ships-btn" class="btn btn-primary btn-icon ">
-        <img src="/public/icon/ship.svg" alt="ship">
+        <img src="/ship.svg" alt="ship">
+      </button>
+      <button type="button" id="clear-route-btn" class="btn btn-danger btn-icon" title="Tắt đường đi">
+        <i class="bi bi-x-circle"></i>
       </button>
     </div>
 
@@ -313,9 +334,9 @@
 
           </div>
           <div class="modal-footer">
-                        <button id="btn-tai-nhat-ky" type="button btn-icon" class="btn btn-primary">        <img src="/public/icon/print.svg" style="width: 50px; height: 30px;" alt="search">
+                        <button id="btn-tai-nhat-ky" type="button btn-icon" class="btn btn-primary">        <img src="/print.svg" style="width: 50px; height: 30px;" alt="search">
 </button>
-            <button id="btn-tai-duong-di" type="button btn-icon" class="btn btn-primary">        <img src="/public/icon/map_maker.svg" style="width: 50px; height: 30px;" alt="search">
+            <button id="btn-tai-duong-di" type="button btn-icon" class="btn btn-primary">        <img src="//map_maker.svg" style="width: 50px; height: 30px;" alt="search">
 </button>
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="height: 45px;">Close</button>
 

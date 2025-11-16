@@ -4,6 +4,7 @@ import TileLayer from 'ol/layer/Tile.js';
 import Point from 'ol/geom/Point.js';
 import { useGeographic } from 'ol/proj.js';
 import Icon from 'ol/style/Icon.js';
+import { API_BASE_URL } from './config.js';
 
 import ImageTile from 'ol/source/ImageTile.js';
 import VectorSource from 'ol/source/Vector.js';
@@ -18,7 +19,7 @@ import Fill from 'ol/style/Fill';
 import Overlay from 'ol/Overlay.js';
 import GeoJSON from 'ol/format/GeoJSON.js';
 import { headers, data, datachuyenBien, headersChuyenBien, Table } from './Table';
-import { download, DanhSachTau, DanhSachChuyenBien, Locations, TimTauTheoId } from './Controll';
+import { download, DanhSachTau, DanhSachChuyenBien, Locations, TimTauTheoId } from './controll.js';
 import { LoadingOverlay } from './loading';
 // tạo loading và thêm vào body
 const loadingMain = new LoadingOverlay
@@ -101,7 +102,7 @@ function renderShipArray(data) {
     button.className = "btn btn-primary col d-flex align-items-center justify-content-center";
     button.dataset.id = item.Id || item.id || '';
     const img = document.createElement('img');
-    img.src = '/public/icon/documnet.svg';
+    img.src = '/documnet.svg';
     img.alt = 'xem';
     img.style.width = '20px'; img.style.height='20px'; img.style.objectFit='contain';
     button.appendChild(img);
@@ -170,7 +171,7 @@ const showChuyenBienOnclick = (idShip) => {
       button.dataset.id = item.Id;
       // use an icon instead of text for the "xem" action
   const img = document.createElement('img');
-  img.src = '/public/icon/documnet.svg';
+  img.src = '/documnet.svg';
   img.alt = 'xem-chi-tiet';
   img.style.width = '20px';
   img.style.height = '20px';
@@ -192,7 +193,7 @@ const showChuyenBienOnclick = (idShip) => {
       button1.dataset.id = item.Id;
      // use an icon instead of text for the "xem" action
   const img1 = document.createElement('img');
-  img1.src = '/public/icon/map_maker.svg';
+  img1.src = '/map_maker.svg';
   img1.alt = 'xem';
   img1.style.width = '20px';
   img1.style.height = '20px';
@@ -783,7 +784,7 @@ const showDetail = (idChuyenBien) => {
   ];
 
   // Gọi API chung `/api/thong-tin-chuyen-bien` để lấy tất cả dữ liệu chi tiết
-  const urlInfo = `http://localhost:3000/api/thong-tin-chuyen-bien?id=${idChuyenBien}`;
+  const urlInfo = `${API_BASE_URL}/api/thong-tin-chuyen-bien?id=${idChuyenBien}`;
 
   fetch(urlInfo)
     .then(res => {
@@ -1027,7 +1028,7 @@ const duongDiChuyenBien = (idChuyenBien) => {
 
     if (routes.length === 0) {
       loadingMain.hide();
-      alert('Không tìm thấy dữ liệu hải trình cho chuyến biển này.');
+      alert('Tàu đã cập cảng, không có dữ liệu hải trình để hiển thị.');
       return;
     }
 
@@ -1054,8 +1055,8 @@ const duongDiChuyenBien = (idChuyenBien) => {
     const markerStyle = new Style({
       image: new Circle({
         radius: 6,
-        fill: new Fill({ color: 'red' }),
-        stroke: new Stroke({ color: 'white', width: 2 }),
+        fill: new Fill({ color: 'white' }),
+        stroke: new Stroke({ color: 'black', width: 2 }),
       }),
     });
 
@@ -1190,7 +1191,9 @@ useGeographic();
 
 
 // Kết nối đến server WebSocket
-const ws = new WebSocket('ws://localhost:8080');
+//const ws = new WebSocket('ws://161.248.147.115:8080');
+const ws = new WebSocket('ws://171.244.40.86:8080');
+
 // Tham chiếu modal
 
 const modalTitle = modalInforEL.querySelector('#modal-info-title');
@@ -1347,37 +1350,32 @@ const shipStyleFunction = function(feature, resolution) {
 
   const status = Number(feature.get('statuss')) || 0;
   const sos = Number(feature.get('sos')) || 0;
-  const key = status + '::' + zoom;
-  // If this feature has SOS active, use red ship icon (SOS takes priority)
+  const key = status + '::' + sos + '::' + zoom;
+
+  let fillColor;
   if (sos === 1) {
-    // Compute scale based on zoom level for consistent sizing
-    // Increased scale factor for better visibility: 0.05 to 0.15 range
-    const baseScale = Math.max(0.05, Math.min(0.15, zoom * 0.015));
-    return new Style({
-      zIndex: 9999,
-      image: new Icon({
-        src: '/public/icon/ship-red.svg',
-        scale: baseScale,
-        anchor: [0.5, 0.5],
-      })
-    });
+    fillColor = 'red';
+  } else if (status === 1) {
+    fillColor = 'green';
+  } else if (status === 2) {
+    fillColor = 'yellow';
+  } else {
+    fillColor = 'green';
   }
 
-  // Non-SOS: use cached styles per (status, zoom)
+  // If this feature has SOS active, use higher zIndex
+  const zIndex = sos === 1 ? 9999 : undefined;
+
+  let radius = sos === 1 ? 12 : 8;
+
   if (__shipStyleCache[key]) return __shipStyleCache[key];
 
-  // scale mapping: grow with zoom but clamp
-  // Increased scale factor for better visibility: 0.05 to 0.15 range
-  const baseScale = Math.max(0.05, Math.min(0.15, zoom * 0.015));
-  let iconSrc = '/public/icon/ship-yellow.svg'; // default: inactive (yellow)
-  if (status === 1) iconSrc = '/public/icon/ship-green.svg'; // active (green)
-  else if (status === 2) iconSrc = '/public/icon/ship-red.svg'; // docked/inactive (red)
-
   const s = new Style({
-    image: new Icon({
-      src: iconSrc,
-      scale: baseScale,
-      anchor: [0.5, 0.5],
+    zIndex: zIndex,
+    image: new Circle({
+      radius: radius,
+      fill: new Fill({ color: fillColor }),
+      stroke: new Stroke({ color: 'white', width: 2 }),
     }),
   });
   __shipStyleCache[key] = s;
@@ -1544,6 +1542,11 @@ window.addEventListener('DOMContentLoaded', () => {
     if (isCollapsed) {
       subNavContent.classList.add('collapsed');
       subNavToggle.classList.add('collapsed');
+      // Set icon to down
+      subNavToggle.querySelector('i').className = 'bi bi-chevron-down';
+    } else {
+      // Set icon to up
+      subNavToggle.querySelector('i').className = 'bi bi-chevron-up';
     }
     
     subNavToggle.addEventListener('click', function() {
@@ -1553,11 +1556,15 @@ window.addEventListener('DOMContentLoaded', () => {
         // Expand
         subNavContent.classList.remove('collapsed');
         subNavToggle.classList.remove('collapsed');
+        // Change icon to up
+        subNavToggle.querySelector('i').className = 'bi bi-chevron-up';
         localStorage.setItem('subNavCollapsed', 'false');
       } else {
         // Collapse
         subNavContent.classList.add('collapsed');
         subNavToggle.classList.add('collapsed');
+        // Change icon to down
+        subNavToggle.querySelector('i').className = 'bi bi-chevron-down';
         localStorage.setItem('subNavCollapsed', 'true');
       }
     });
@@ -1571,6 +1578,16 @@ window.addEventListener('DOMContentLoaded', () => {
   });
 
   updateLayer(0);
+  // Ensure map size is recalculated after showing container and adding layers
+  // Some browsers/layouts require a small delay to get correct container size
+  setTimeout(() => {
+    try { map.updateSize(); } catch (e) { /* ignore if map not ready */ }
+  }, 100);
+
+  // Update map size on window resize to avoid icon/canvas scaling issues
+  window.addEventListener('resize', () => {
+    try { map.updateSize(); } catch (e) { }
+  });
   // SOS blinking disabled — no animation loop started
 
   // Load Vietnam geojson and render dashed white border
@@ -1621,7 +1638,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
   // Load initial ship positions from HTTP API (fallback if WebSocket is slow/fails)
   (function loadInitialShips() {
-    fetch('http://localhost:3000/api/ship')
+    fetch(`${API_BASE_URL}/api/ship`)
       .then(r => {
         if (!r.ok) throw new Error('Failed to load ships');
         return r.json();
@@ -1669,6 +1686,15 @@ window.addEventListener('DOMContentLoaded', () => {
     });
     // initialize appearance
     updateButtonAppearance(shipFilterState);
+  }
+
+  // Add event listener for clear route button
+  const clearRouteBtn = document.getElementById('clear-route-btn');
+  if (clearRouteBtn) {
+    clearRouteBtn.addEventListener('click', () => {
+      vectorSourceHaiTrinh.clear();
+      console.log('Đã tắt đường đi.');
+    });
   }
 
   // --- Popup overlay để hiển thị thông tin khi click vào điểm hải trình ---
@@ -1787,8 +1813,11 @@ function updateLayer(index) {
   // Add VN boundary layer on top
   map.addLayer(vectorLayerVn);
 
+  console.log('Layers after updateLayer:', map.getLayers().getArray().map(l => l.constructor.name));
+  console.log('vectorLayerShip features:', vectorSourceShip.getFeatures().length);
 
-  console.log(map.getLayers().getArray());
+  // After switching layers, ensure OpenLayers recalculates size/render
+  try { map.updateSize(); } catch (e) { }
 
   // Update state of the tileset buttons
   document.querySelectorAll('.layer-btn').forEach((btn) => {
@@ -1803,7 +1832,7 @@ function updateLayer(index) {
 function showShipInfo(idShip, idChuyenBien) {
   loadingMain.show();
 
-  fetch(`http://localhost:3000/api/ship-info?id=${idShip}`)
+  fetch(`${API_BASE_URL}/api/ship-info?id=${idShip}`)
     .then(response => response.json())
     .then(data => {
       console.log(data[0])
@@ -1850,7 +1879,7 @@ document.addEventListener('DOMContentLoaded', function () {
   // //   console.log(xmlDoc);
   // //  }
 
-  // //  xhr.open("GET",`http://localhost:3000/api/locations?id=${item.id}`,flase)
+  // //  xhr.open("GET",`http://161.248.147.115:3000/api/locations?id=${item.id}`,flase)
   // modalDetail.show();
   // }));
 

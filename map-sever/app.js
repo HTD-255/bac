@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 const { sql, connectToDb } = require('./src/db');
 const cors = require('cors');
-const port = 3000;
+const port = process.env.PORT || 3000;
 const WebSocket = require('ws');
 const fs = require('fs');
 const path = require('path');
@@ -87,7 +87,7 @@ wss.on('connection', ws => {
 
 
 
-app.use(cors({ origin: 'http://localhost:5173' }));
+app.use(cors({ origin: ['http://161.248.147.115', 'http://171.244.40.86'] }));
 // Parse JSON bodies
 app.use(express.json());
 app.get('/api/ship',async(req,res)=>{
@@ -162,6 +162,17 @@ app.post('/api/add-ship', async (req, res) => {
       return res.status(400).json({ success: false, message: 'Thiếu thông tin bắt buộc: so_dang_ki_tau hoặc ten_chu_tau hoặc ship_name' });
     }
 
+    const soDangKi = payload.so_dang_ki_tau ?? payload.so_dang_ky_tau ?? null;
+    if (soDangKi) {
+      // Check if ship with this registration already exists
+      const checkRequest = new sql.Request();
+      checkRequest.input('so_dang_ki_tau', sql.NVarChar, soDangKi);
+      const checkResult = await checkRequest.query('SELECT id FROM dbo.ship WHERE so_dang_ki_tau = @so_dang_ki_tau');
+      if (checkResult.recordset.length > 0) {
+        return res.status(409).json({ success: false, message: 'Tàu với số đăng ký này đã tồn tại' });
+      }
+    }
+
     // Generate an id if not provided (matches nvarchar(450) primary key)
     const id = (payload.id && String(payload.id).trim()) ? String(payload.id) : randomUUID();
 
@@ -171,7 +182,7 @@ app.post('/api/add-ship', async (req, res) => {
     request.input('id_chu_tau', sql.Int, payload.id_chu_tau ?? null);
     request.input('ten_chu_tau', sql.NVarChar, payload.ten_chu_tau ?? null);
     request.input('ten_thuyen_truong', sql.NVarChar, payload.ten_thuyen_truong ?? null);
-    request.input('so_dang_ki_tau', sql.NVarChar, payload.so_dang_ki_tau ?? payload.so_dang_ky_tau ?? null);
+    request.input('so_dang_ki_tau', sql.NVarChar, soDangKi);
     request.input('chieu_dai_tau', sql.NVarChar, payload.chieu_dai_tau ?? null);
     request.input('tong_cong_suat', sql.Real, payload.tong_cong_suat ?? null);
     request.input('so_giay_phep', sql.NVarChar, payload.so_giay_phep ?? null);
@@ -647,7 +658,12 @@ app.get('/api/download', async (req, res) => {
 
     //   // Chuyển HTML sang PDF bằng Puppeteer
     const puppeteer = require('puppeteer');
-    const browser = await puppeteer.launch();
+    const browser = await puppeteer.launch({
+    headless: true, // Giữ nguyên hoặc đảm bảo là true
+    // 🌟 THÊM DÒNG NÀY ĐỂ GIẢI QUYẾT LỖI ROOT 🌟
+    args: ['--no-sandbox', '--disable-setuid-sandbox'],
+    // ... các tùy chọn khác
+});
     const page = await browser.newPage();
     await page.setContent(pageHtml, { waitUntil: 'networkidle0' });
     const pdfBuffer = await page.pdf({ format: 'A4' });
@@ -763,8 +779,8 @@ app.get('/api/login', (req, res) => {
   });
 });
 
-app.listen(port, () => {
-  console.log(`App listening at http://localhost:${port}`);
+app.listen(port, '0.0.0.0', () => {
+  console.log(`App listening at http://0.0.0.0:${port}`);
 });
 
 

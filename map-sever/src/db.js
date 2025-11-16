@@ -5,11 +5,14 @@ require('dotenv').config({path:'./config.env'});
 const config={
     user:"sa",
     password:'Abc123@#!',
-    server:'161.248.147.115',
+    server:'171.244.40.86',
     database:'nhatkytauca1',
-    options:{
-        encrypt:false,
-        trustServerCertificate:true
+    options: {
+        // *** Add or change these options: ***
+        encrypt: true,       // Force encryption (required for modern servers)
+        trustServerCertificate: true, // Bypass certificate validation (USE WITH CAUTION)
+        trustedConnection: false,    // Use SQL Server Authentication
+        connectionTimeout: 15000,    // (Optional) Increase timeout
     }
 };
 async function connectToDb(){

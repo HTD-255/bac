@@ -25,7 +25,7 @@ function updateUI(locationData) {
  async function updateLocation() {
     while (true) {
         await new Promise(resolve => setTimeout(resolve, 5000));
-         const response = await fetch('http://localhost:3000/api/locations');
+         const response = await fetch(`${API_BASE_URL}/api/locations`);
     response.json().then(data => {
         // Update the UI with the new location data
     });
