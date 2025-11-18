@@ -6,6 +6,9 @@ Hệ thống giám sát và quản lý tàu biển.
 
 ### Tài liệu
 
+#### Kiến trúc Hệ thống
+- [Kiến trúc Hệ thống VMS](docs/VMS-Architecture.md) - **Architecture Documentation**: Sơ đồ khối, luồng dữ liệu, công nghệ, bảo mật
+
 #### Sơ đồ UML
 - [Sơ đồ Tuần tự Hệ thống VMS](docs/VMS-Sequence-Diagrams.md) - Sequence Diagrams: Thứ tự thời gian các luồng tương tác
 - [Sơ đồ Tương tác Hệ thống VMS](docs/VMS-Collaboration-Diagrams.md) - Collaboration Diagrams: Cấu trúc và mối quan hệ giữa các đối tượng
