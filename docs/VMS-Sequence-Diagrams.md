@@ -103,6 +103,10 @@ sequenceDiagram
     deactivate NKDT
 ```
 
+**Xem sơ đồ dạng hình ảnh:**
+
+![Sơ đồ 1: Xử lý và Lưu Trữ Dữ liệu Vị trí](images/diagram1-location-processing.png)
+
 ### Đặc điểm kỹ thuật
 
 - **Hiệu suất**: Xử lý > 1000 gói tin/giây
@@ -172,6 +176,10 @@ sequenceDiagram
         deactivate Frontend
     end
 ```
+
+**Xem sơ đồ dạng hình ảnh:**
+
+![Sơ đồ 2: Hiển thị Vị trí Real-time trên Bản đồ](images/diagram2-realtime-display.png)
 
 ### Đặc điểm kỹ thuật
 
@@ -265,6 +273,10 @@ sequenceDiagram
     
     Note over Frontend: Download hoặc<br/>Preview PDF
 ```
+
+**Xem sơ đồ dạng hình ảnh:**
+
+![Sơ đồ 3: Sinh Báo cáo Khai thác PDF](images/diagram3-pdf-report.png)
 
 ### Đặc điểm kỹ thuật
 
