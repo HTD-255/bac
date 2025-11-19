@@ -4,6 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Azure Maps</title>
+  <script src="/auth-redirect.js"></script>
   <link rel="stylesheet" href="node_modules/ol/ol.css">
   <link rel="stylesheet" href="css/custom.css">
   <link rel="stylesheet" href="css/controll_paint.css">
@@ -161,6 +162,11 @@
         <ul class="navbar-nav">
           <li class="nav-item">
             <a class="nav-link active" aria-current="page" href="#">Home</a>
+          </li>
+        </ul>
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="#" id="logout-btn">Đăng xuất</a>
           </li>
         </ul>
       </div>
@@ -502,6 +508,15 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
       integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
       crossorigin="anonymous"></script>
+    <script>
+      // Logout functionality
+      document.getElementById('logout-btn')?.addEventListener('click', (e) => {
+        e.preventDefault();
+        sessionStorage.removeItem('isLoggedIn');
+        sessionStorage.removeItem('username');
+        window.location.href = '/login.html';
+      });
+    </script>
 </body>
 
 </html>
