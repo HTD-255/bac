@@ -19,7 +19,7 @@ import Fill from 'ol/style/Fill';
 import Overlay from 'ol/Overlay.js';
 import GeoJSON from 'ol/format/GeoJSON.js';
 import { headers, data, datachuyenBien, headersChuyenBien, Table } from './Table';
-import { download, DanhSachTau, DanhSachChuyenBien, Locations, TimTauTheoId } from './controll.js';
+import { download, DanhSachTau, DanhSachChuyenBien, Locations, TimTauTheoId } from './Controll.js';
 import { LoadingOverlay } from './loading';
 // tạo loading và thêm vào body
 const loadingMain = new LoadingOverlay
@@ -101,6 +101,18 @@ function renderShipArray(data) {
       div3.textContent = (Number(item.statuss)===1)?"Hoạt động":"Cập Bến";
     }
     row.appendChild(div3)
+
+    // Add 4th column with "Xem" button to view sea trips
+    const div4 = document.createElement("div")
+    div4.className = "col";
+    const viewButton = document.createElement("button")
+    viewButton.className = "btn btn-primary btn-sm";
+    viewButton.textContent = "Xem";
+    viewButton.addEventListener("click", () => {
+      showChuyenBienOnclick(item.id);
+    });
+    div4.appendChild(viewButton);
+    row.appendChild(div4)
 
     tableShip.tbody.appendChild(row)
   })
