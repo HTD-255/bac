@@ -135,10 +135,46 @@ const showChuyenBienOnclick = (idShip) => {
     content.appendChild(loadingShip.getElement());
   }
 
-  // Ensure title exists
+  // Ensure title and year filter exist together
   const titleId = 'chuyen-bien-title';
-  if (!content.querySelector(`#${titleId}`)) {
-    content.insertAdjacentHTML("beforeend", `<h6 class="border-bottom pb-2 mb-3" id="${titleId}">Thông tin Chuyến biển</h6>`);
+  const filterContainerId = 'chuyen-bien-filter-container';
+  const yearFilterId = 'year-filter-voyage';
+  
+  if (!content.querySelector(`#${filterContainerId}`)) {
+    // Create a container for title and year filter
+    const filterContainer = document.createElement('div');
+    filterContainer.id = filterContainerId;
+    filterContainer.className = 'mb-3';
+    filterContainer.innerHTML = `
+      <div class="d-flex align-items-center gap-2 mb-2">
+        <h6 class="border-bottom pb-2 mb-0" id="${titleId}" style="flex: 1;">Thông tin Chuyến biển</h6>
+      </div>
+      <div class="d-flex align-items-center gap-2">
+        <label for="${yearFilterId}" class="form-label mb-0">Lọc theo năm:</label>
+        <input type="number" class="form-control" id="${yearFilterId}" placeholder="2025" min="2000" max="2100" value="${new Date().getFullYear()}" style="width: 120px;">
+      </div>
+    `;
+    content.appendChild(filterContainer);
+    
+    // Set up year filter event listener (only once when created)
+    const yearFilterVoyage = document.getElementById(yearFilterId);
+    if (yearFilterVoyage) {
+      // Set initial year
+      window.__SELECTED_YEAR = new Date().getFullYear();
+      
+      yearFilterVoyage.addEventListener('change', function() {
+        const year = this.value;
+        if (!year) {
+          window.__SELECTED_YEAR = null;
+        } else {
+          window.__SELECTED_YEAR = parseInt(year);
+        }
+        // Re-fetch and filter the voyage data for the current ship
+        if (currentShipId) {
+          showChuyenBienOnclick(currentShipId);
+        }
+      });
+    }
   }
 
   // Ensure table structure exists and is appended only once
@@ -2024,27 +2060,6 @@ document.addEventListener('DOMContentLoaded', function () {
         if (modal) modal.hide();
       }
     );
-  }
-
-  // Year filter functionality
-  const yearFilter = document.getElementById('year-filter');
-  if (yearFilter) {
-    // Set default value to current year
-    const currentYear = new Date().getFullYear();
-    yearFilter.value = currentYear;
-    window.__SELECTED_YEAR = currentYear;
-    
-    yearFilter.addEventListener('change', function() {
-      const year = this.value;
-      if (!year) {
-        window.__SELECTED_YEAR = null;
-        return;
-      }
-      
-      // Filter voyage data by year when displaying the list
-      // This will be applied in the showChuyenBienOnclick function
-      window.__SELECTED_YEAR = parseInt(year);
-    });
   }
 
   // Print button functionality for modal-detail
