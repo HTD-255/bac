@@ -1,5 +1,13 @@
-// auth-redirect disabled
-// The app uses a simple client-side login (`login.html` + `js/login.js`).
-// This file left intentionally empty to avoid automatic redirects.
+// Authentication redirect
+// Check if user is logged in, redirect to login if not
+(function() {
+  // Don't redirect if we're already on the login page
+  if (window.location.pathname.includes('login.html')) {
+    return;
+  }
 
-// (Originally removed per user request.)
+  // Check if user is logged in
+  if (sessionStorage.getItem('isLoggedIn') !== 'true') {
+    window.location.href = '/login.html';
+  }
+})();
