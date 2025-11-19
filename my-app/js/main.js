@@ -121,9 +121,14 @@ function renderShipArray(data) {
 const tableChuyenBien = new Table("table-chuyen-bien")
 tableChuyenBien.createTHead(headersChuyenBien);
 
+// Store current ship ID for download functionality
+let currentShipId = null;
+
 const showChuyenBienOnclick = (idShip) => {
   console.log(idShip);
-
+  
+  // Store the ship ID for later use
+  currentShipId = idShip;
 
   // Ensure loadingShip element is present in the content (only once)
   if (!content.contains(loadingShip.getElement())) {
@@ -249,7 +254,13 @@ const showChuyenBienOnclick = (idShip) => {
   )
 }
 
+// Store current voyage ID for download functionality
+let currentChuyenBienId = null;
+
 const showDetail = (idChuyenBien) => {
+  
+  // Store the voyage ID for later use
+  currentChuyenBienId = idChuyenBien;
   
   const modal = getModalDetail();
   if (modal) modal.show();
@@ -2018,9 +2029,17 @@ document.addEventListener('DOMContentLoaded', function () {
   // Year filter functionality
   const yearFilter = document.getElementById('year-filter');
   if (yearFilter) {
+    // Set default value to current year
+    const currentYear = new Date().getFullYear();
+    yearFilter.value = currentYear;
+    window.__SELECTED_YEAR = currentYear;
+    
     yearFilter.addEventListener('change', function() {
       const year = this.value;
-      if (!year) return;
+      if (!year) {
+        window.__SELECTED_YEAR = null;
+        return;
+      }
       
       // Filter voyage data by year when displaying the list
       // This will be applied in the showChuyenBienOnclick function
@@ -2032,68 +2051,22 @@ document.addEventListener('DOMContentLoaded', function () {
   const btnPrintDetail = document.getElementById('btn-print-detail');
   if (btnPrintDetail) {
     btnPrintDetail.addEventListener('click', function() {
-      // Get the modal content
-      const modalBody = document.querySelector('#modal-detail .modal-body');
-      if (!modalBody) {
-        alert('Không có nội dung để in!');
+      if (!currentShipId || !currentChuyenBienId) {
+        alert('Không tìm thấy thông tin tàu hoặc chuyến biển!');
         return;
       }
-
-      // Create a print-friendly version
-      const printWindow = window.open('', '_blank');
-      const printContent = `
-        <!DOCTYPE html>
-        <html>
-        <head>
-          <meta charset="UTF-8">
-          <title>In thông tin chuyến biển</title>
-          <style>
-            body { 
-              font-family: Arial, sans-serif; 
-              padding: 20px;
-              font-size: 12px;
-            }
-            table { 
-              width: 100%; 
-              border-collapse: collapse; 
-              margin-bottom: 20px;
-            }
-            table, th, td { 
-              border: 1px solid black; 
-              padding: 8px;
-              text-align: left;
-            }
-            th { 
-              background-color: #f0f0f0; 
-              font-weight: bold;
-            }
-            h6 { 
-              margin-top: 20px; 
-              margin-bottom: 10px;
-              font-size: 14px;
-              font-weight: bold;
-            }
-            .nav-tabs { display: none; }
-            @media print {
-              body { margin: 0; }
-              button { display: none; }
-            }
-          </style>
-        </head>
-        <body>
-          <h2 style="text-align: center;">Thông tin chuyến biển</h2>
-          ${modalBody.innerHTML}
-          <script>
-            window.onload = function() {
-              window.print();
-            };
-          </script>
-        </body>
-        </html>
-      `;
       
-      printWindow.document.write(printContent);
-      printWindow.document.close();
+      loadingMain.show();
+      
+      // Call download API instead of printing
+      download(currentShipId, currentChuyenBienId, 
+        () => {
+          loadingMain.hide();
+        },
+        () => {
+          loadingMain.hide();
+        }
+      );
     });
   }
 
