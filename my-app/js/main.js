@@ -152,7 +152,28 @@ const showChuyenBienOnclick = (idShip) => {
       tableChuyenBien.tbody.innerHTML = '';
     }
 
-  data.forEach(item => {
+    // Apply year filter if set
+    let filteredData = data;
+    const selectedYear = window.__SELECTED_YEAR;
+    if (selectedYear) {
+      filteredData = data.filter(item => {
+        // Try to extract year from various date fields
+        const dateFields = ['time_create', 'created_at', 'ngay_tao', 'thoi_gian_tao'];
+        for (const field of dateFields) {
+          if (item[field]) {
+            const year = new Date(item[field]).getFullYear();
+            if (year === selectedYear) return true;
+          }
+        }
+        // Also check if chuyen_bien_so contains year
+        if (item.chuyen_bien_so && item.chuyen_bien_so.includes(String(selectedYear))) {
+          return true;
+        }
+        return false;
+      });
+    }
+
+  filteredData.forEach(item => {
       // Giả định tableChuyenBien.createRow() đã được sửa để tạo <tr> và thêm vào tbody
       const row = tableChuyenBien.createRow();
       // ... (Phần còn lại của logic tạo <div>/button và thêm vào row)
@@ -1992,6 +2013,88 @@ document.addEventListener('DOMContentLoaded', function () {
         if (modal) modal.hide();
       }
     );
+  }
+
+  // Year filter functionality
+  const yearFilter = document.getElementById('year-filter');
+  if (yearFilter) {
+    yearFilter.addEventListener('change', function() {
+      const year = this.value;
+      if (!year) return;
+      
+      // Filter voyage data by year when displaying the list
+      // This will be applied in the showChuyenBienOnclick function
+      window.__SELECTED_YEAR = parseInt(year);
+    });
+  }
+
+  // Print button functionality for modal-detail
+  const btnPrintDetail = document.getElementById('btn-print-detail');
+  if (btnPrintDetail) {
+    btnPrintDetail.addEventListener('click', function() {
+      // Get the modal content
+      const modalBody = document.querySelector('#modal-detail .modal-body');
+      if (!modalBody) {
+        alert('Không có nội dung để in!');
+        return;
+      }
+
+      // Create a print-friendly version
+      const printWindow = window.open('', '_blank');
+      const printContent = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <meta charset="UTF-8">
+          <title>In thông tin chuyến biển</title>
+          <style>
+            body { 
+              font-family: Arial, sans-serif; 
+              padding: 20px;
+              font-size: 12px;
+            }
+            table { 
+              width: 100%; 
+              border-collapse: collapse; 
+              margin-bottom: 20px;
+            }
+            table, th, td { 
+              border: 1px solid black; 
+              padding: 8px;
+              text-align: left;
+            }
+            th { 
+              background-color: #f0f0f0; 
+              font-weight: bold;
+            }
+            h6 { 
+              margin-top: 20px; 
+              margin-bottom: 10px;
+              font-size: 14px;
+              font-weight: bold;
+            }
+            .nav-tabs { display: none; }
+            @media print {
+              body { margin: 0; }
+              button { display: none; }
+            }
+          </style>
+        </head>
+        <body>
+          <h2 style="text-align: center;">Thông tin chuyến biển</h2>
+          ${modalBody.innerHTML}
+          <script>
+            window.onload = function() {
+              window.print();
+            };
+          </script>
+        </body>
+        </html>
+      `;
+      
+      printWindow.document.write(printContent);
+      printWindow.document.close();
+    });
   }
 
 });

@@ -362,6 +362,12 @@
               </div>
             </form>
 
+            <!-- Year filter -->
+            <div class="mb-3">
+              <label for="year-filter" class="form-label">Thông tin Chuyến biển</label>
+              <input type="number" class="form-control" id="year-filter" placeholder="2025" min="2000" max="2100" value="">
+            </div>
+
             <div class="d-flex gap-2 mb-3" id="action-buttons" style="display: none;">
               <a href="/add-ship" id="edit-ship-btn" class="btn btn-warning btn-sm" target="_blank">✏️ Sửa</a>
               <button id="delete-ship-btn" class="btn btn-danger btn-sm">🗑️ Xóa</button>
@@ -392,6 +398,9 @@
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title" id="exampleModalLabel">Thông tin tàu & Tra cứu</h5>
+            <button type="button" id="btn-print-detail" class="btn btn-outline-danger btn-sm me-2" title="In thông tin chuyến biển">
+              print
+            </button>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
 
