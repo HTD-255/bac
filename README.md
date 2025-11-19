@@ -4,8 +4,12 @@ Hệ thống quản lý và giám sát tàu biển với tracking GPS real-time,
 
 ## 📚 Tài Liệu
 
-- **[Tổng Quan Kiến Trúc](./docs/ARCHITECTURE_OVERVIEW.md)** - Sơ đồ tổng quan hệ thống
-- **[Kiến Trúc Chi Tiết](./docs/SYSTEM_ARCHITECTURE.md)** - Tài liệu kiến trúc đầy đủ
+### Kiến Trúc Hệ Thống
+- **[Tổng Quan Kiến Trúc](./docs/ARCHITECTURE_OVERVIEW.md)** - Sơ đồ khối tổng quan hệ thống
+- **[Kiến Trúc Chi Tiết](./docs/SYSTEM_ARCHITECTURE.md)** - Tài liệu kiến trúc đầy đủ với mô tả các thành phần
+- **[Sơ Đồ Luồng Dữ Liệu](./docs/DATA_FLOW_DIAGRAMS.md)** - Sequence diagrams cho các quy trình chính
+
+### Triển Khai & Thiết Kế
 - **[Hướng Dẫn Triển Khai](./map-sever/DEPLOYMENT_GUIDE.md)** - Deploy lên Windows Server 2019
 - **[Thiết Kế UI](./my-app/docs/UI-Design-Report.md)** - Báo cáo thiết kế giao diện
 
