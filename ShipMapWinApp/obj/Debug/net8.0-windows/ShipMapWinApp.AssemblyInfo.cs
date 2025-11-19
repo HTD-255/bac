@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ShipMapWinApp")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b35f9e3e8d1d320b3eb2409fe56beb93903ce8a0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5f2b0d019057b2c4a8a67f0f3578ee8b8f49fa04")]
 [assembly: System.Reflection.AssemblyProductAttribute("ShipMapWinApp")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ShipMapWinApp")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

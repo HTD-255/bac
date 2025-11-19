@@ -228,22 +228,23 @@
       <button type="button  " id="show_controll" class="btn btn-icon btn-primary" data-bs-toggle="modal"
         data-bs-target="#modal-controll" data-bs-container="body" data-bs-toggle="popover" data-bs-placement="right"
         data-bs-content="Right popover" data-bs-trigger="hover">
-        <img src="/search.svg" alt="search">
+        <img src="/search.svg" style="color: black;" alt="search">
       </button>
       <button type="button" id="filter-active-btn" class="btn btn-success btn-icon" title="Hiện tàu Hoạt Động">
-        <i class="bi bi-ship"></i>
+                <img src="/ship.svg" style="color: black;" alt="search">
       </button>
       <button type="button" id="filter-completed-btn" class="btn btn-warning btn-icon" title="Hiện tàu Hoàn Thành">
-        <i class="bi bi-anchor"></i>
+                <img src="/anchor.svg" style="color: black;" alt="search">
+
       </button>
       <button type="button" id="filter-sos-btn" class="btn btn-danger btn-icon" title="Hiện tàu SOS">
-        <i class="bi bi-exclamation-triangle-fill"></i>
+        <i class="bi bi-exclamation-triangle-fill" style="color: red;"></i>
       </button>
       <button type="button" id="filter-all-btn" class="btn btn-primary btn-icon active" title="Hiện tất cả tàu">
-        <i class="bi bi-eye-fill"></i>
+        <i class="bi bi-eye-fill" style="color: black;"></i>
       </button>
       <button type="button" id="clear-route-btn" class="btn btn-secondary btn-icon" title="Tắt đường đi">
-        <i class="bi bi-x-circle"></i>
+        <i class="bi bi-x-circle" style="color: black;"></i>
       </button>
     </div>
 
@@ -257,9 +258,9 @@
       </div> -->
 
     <!-- Button trigger modal -->
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal-info">
+    <!-- <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal-info">
       Launch demo modal
-    </button>
+    </button> -->
 
     <!-- Modal -->
     <div class="modal fade  " id="modal-info" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -351,7 +352,7 @@
           <div class="modal-footer">
                         <button id="btn-tai-nhat-ky" type="button btn-icon" class="btn btn-primary">        <img src="/print.svg" style="width: 50px; height: 30px;" alt="search">
 </button>
-            <button id="btn-tai-duong-di" type="button btn-icon" class="btn btn-primary">        <img src="//map_maker.svg" style="width: 50px; height: 30px;" alt="search">
+            <button id="btn-tai-duong-di" type="button btn-icon" class="btn btn-primary">        <img src="/map_maker.svg" style="width: 50px; height: 30px;" alt="search">
 </button>
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="height: 45px;">Close</button>
 
@@ -377,10 +378,7 @@
               </div>
             </form>
 
-            <div class="d-flex gap-2 mb-3" id="action-buttons" style="display: none;">
-              <a href="/add-ship" id="edit-ship-btn" class="btn btn-warning btn-sm" target="_blank">✏️ Sửa</a>
-              <button id="delete-ship-btn" class="btn btn-danger btn-sm">🗑️ Xóa</button>
-            </div>
+
 
             <div id="ship-info-display">
 

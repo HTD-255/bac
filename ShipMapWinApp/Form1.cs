@@ -15,7 +15,7 @@ public partial class Form1 : Form
             await webView21.EnsureCoreWebView2Async(null);
             
             // Navigate to the URL
-            webView21.CoreWebView2.Navigate("http://161.248.147.115/");
+            webView21.CoreWebView2.Navigate("http://157.66.100.146:5173/");
         }
         catch (Exception ex)
         {
@@ -25,6 +25,6 @@ public partial class Form1 : Form
 
     private void ButtonAddShip_Click(object sender, EventArgs e)
     {
-        webView21.CoreWebView2.Navigate("http://161.248.147.115/add-ship");
+        webView21.CoreWebView2.Navigate("hhttp://157.66.100.146:5173/add-ship");
     }
 }
