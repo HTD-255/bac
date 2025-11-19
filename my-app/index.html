@@ -139,6 +139,12 @@
       left: 10px;
       z-index: 1000;
     }
+    
+    /* Filter button active state */
+    .btn-icon.active {
+      border: 3px solid white;
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+    }
   </style>
 </head>
 
@@ -224,10 +230,19 @@
         data-bs-content="Right popover" data-bs-trigger="hover">
         <img src="/search.svg" alt="search">
       </button>
-      <button type="button  " id="toggle-ships-btn" class="btn btn-primary btn-icon ">
-        <img src="/ship.svg" alt="ship">
+      <button type="button" id="filter-active-btn" class="btn btn-success btn-icon" title="Hiện tàu Hoạt Động">
+        <i class="bi bi-ship"></i>
       </button>
-      <button type="button" id="clear-route-btn" class="btn btn-danger btn-icon" title="Tắt đường đi">
+      <button type="button" id="filter-completed-btn" class="btn btn-warning btn-icon" title="Hiện tàu Hoàn Thành">
+        <i class="bi bi-anchor"></i>
+      </button>
+      <button type="button" id="filter-sos-btn" class="btn btn-danger btn-icon" title="Hiện tàu SOS">
+        <i class="bi bi-exclamation-triangle-fill"></i>
+      </button>
+      <button type="button" id="filter-all-btn" class="btn btn-primary btn-icon active" title="Hiện tất cả tàu">
+        <i class="bi bi-eye-fill"></i>
+      </button>
+      <button type="button" id="clear-route-btn" class="btn btn-secondary btn-icon" title="Tắt đường đi">
         <i class="bi bi-x-circle"></i>
       </button>
     </div>

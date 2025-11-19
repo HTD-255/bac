@@ -98,7 +98,7 @@ function renderShipArray(data) {
   div3.textContent = "SOS"
   div3.style.color="red"
     }else{
-      div3.textContent = (Number(item.statuss)===1)?"Hoạt động":"Cập Bến";
+      div3.textContent = (Number(item.statuss)===1)?"Hoạt động":"Hoàn thành";
     }
     row.appendChild(div3)
 
@@ -1450,7 +1450,7 @@ const shipStyleFunction = function(feature, resolution) {
 // Attach style function to the ship layer so individual features don't need an explicit style
 vectorLayerShip.setStyle(shipStyleFunction);
 
-// Ship filter state: null = no filter (show all), 1 = show only status 1, 2 = show only status 2
+// Ship filter state: null = no filter (show all), 'active' = show only status 1, 'completed' = show non-active status, 'sos' = show only SOS
 let shipFilterState = null;
 
 // Hidden style used to hide features when filter doesn't match
@@ -1723,35 +1723,51 @@ window.addEventListener('DOMContentLoaded', () => {
       });
   })();
 
-  // add toggle button behavior: cycle through showing status 1, status 2, and all
-  const toggleBtn = document.getElementById('toggle-ships-btn');
-  if (toggleBtn) {
-    const updateButtonAppearance = (state) => {
-      // reset classes
-      toggleBtn.classList.remove('btn-success','btn-danger','btn-primary','btn-outline-secondary');
-      if (state === 1) {
-        toggleBtn.classList.add('btn-success');
-        toggleBtn.title = 'Hiện vị trí trạng thái 1 (xanh)';
-      } else if (state === 2) {
-        toggleBtn.classList.add('btn-danger');
-        toggleBtn.title = 'Hiện vị trí trạng thái 2 (đỏ)';
-      } else {
-        toggleBtn.classList.add('btn-primary');
-        toggleBtn.title = 'Hiện tất cả tàu';
-      }
-    };
-
-    toggleBtn.addEventListener('click', (ev) => {
-      // cycle: null -> 1 -> 2 -> null
-      if (shipFilterState === null) shipFilterState = 1;
-      else if (shipFilterState === 1) shipFilterState = 2;
-      else shipFilterState = null;
-
-      applyShipFilter(shipFilterState);
-      updateButtonAppearance(shipFilterState);
+  // add filter button behavior: separate buttons for active, completed, sos, and all
+  const filterActiveBtn = document.getElementById('filter-active-btn');
+  const filterCompletedBtn = document.getElementById('filter-completed-btn');
+  const filterSosBtn = document.getElementById('filter-sos-btn');
+  const filterAllBtn = document.getElementById('filter-all-btn');
+  
+  const allFilterButtons = [filterActiveBtn, filterCompletedBtn, filterSosBtn, filterAllBtn];
+  
+  const setActiveFilterButton = (activeBtn) => {
+    allFilterButtons.forEach(btn => {
+      if (btn) btn.classList.remove('active');
     });
-    // initialize appearance
-    updateButtonAppearance(shipFilterState);
+    if (activeBtn) activeBtn.classList.add('active');
+  };
+  
+  if (filterActiveBtn) {
+    filterActiveBtn.addEventListener('click', () => {
+      shipFilterState = 'active';
+      applyShipFilter(shipFilterState);
+      setActiveFilterButton(filterActiveBtn);
+    });
+  }
+  
+  if (filterCompletedBtn) {
+    filterCompletedBtn.addEventListener('click', () => {
+      shipFilterState = 'completed';
+      applyShipFilter(shipFilterState);
+      setActiveFilterButton(filterCompletedBtn);
+    });
+  }
+  
+  if (filterSosBtn) {
+    filterSosBtn.addEventListener('click', () => {
+      shipFilterState = 'sos';
+      applyShipFilter(shipFilterState);
+      setActiveFilterButton(filterSosBtn);
+    });
+  }
+  
+  if (filterAllBtn) {
+    filterAllBtn.addEventListener('click', () => {
+      shipFilterState = null;
+      applyShipFilter(shipFilterState);
+      setActiveFilterButton(filterAllBtn);
+    });
   }
 
   // Add event listener for clear route button
@@ -2130,25 +2146,34 @@ function drawRoute(routeCoords) {
   });
 }
 
-// Apply ship visibility filter: state === 1 show only status 1; state === 2 show only status 2; state === null show all
+// Apply ship visibility filter: state === 'active' show only statuss=1; state === 'completed' show statuss!=1; state === 'sos' show sos=1; state === null show all
 function applyShipFilter(state) {
   const features = vectorSourceShip.getFeatures();
   if (!features || !features.length) return;
   features.forEach(f => {
-    // If this feature is an active SOS, always keep it visible (ignore status filter)
     const sosFlag = Number(f.get('sos')) || 0;
-    if (sosFlag === 1) {
-      f.setStyle(undefined);
-      return;
-    }
-    const s = f.get('statuss');
-    if (state === 1) {
-      if (Number(s) === 1) f.setStyle(undefined); else f.setStyle(hiddenShipStyle);
-    } else if (state === 2) {
-      if (Number(s) === 2) f.setStyle(undefined); else f.setStyle(hiddenShipStyle);
+    const s = Number(f.get('statuss')) || 0;
+    
+    let shouldShow = false;
+    
+    if (state === 'active') {
+      // Show only ships with statuss = 1 (active)
+      shouldShow = (s === 1);
+    } else if (state === 'completed') {
+      // Show only ships with statuss != 1 (completed/docked)
+      shouldShow = (s !== 1);
+    } else if (state === 'sos') {
+      // Show only ships with sos = 1
+      shouldShow = (sosFlag === 1);
     } else {
-      // null -> show all (use layer style function)
-      f.setStyle(undefined);
+      // null -> show all ships
+      shouldShow = true;
+    }
+    
+    if (shouldShow) {
+      f.setStyle(undefined); // use layer style function
+    } else {
+      f.setStyle(hiddenShipStyle); // hide
     }
   });
 }
