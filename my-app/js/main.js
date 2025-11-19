@@ -198,16 +198,9 @@ const showChuyenBienOnclick = (idShip) => {
     const selectedYear = window.__SELECTED_YEAR;
     if (selectedYear) {
       filteredData = data.filter(item => {
-        // Try to extract year from various date fields
-        const dateFields = ['time_create', 'created_at', 'ngay_tao', 'thoi_gian_tao'];
-        for (const field of dateFields) {
-          if (item[field]) {
-            const year = new Date(item[field]).getFullYear();
-            if (year === selectedYear) return true;
-          }
-        }
+       
         // Also check if chuyen_bien_so contains year
-        if (item.chuyen_bien_so && item.chuyen_bien_so.includes(String(selectedYear))) {
+        if (item.nam && String(item.nam) === String(selectedYear)) {
           return true;
         }
         return false;
