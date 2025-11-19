@@ -4,7 +4,7 @@ import TileLayer from 'ol/layer/Tile.js';
 import Point from 'ol/geom/Point.js';
 import { useGeographic } from 'ol/proj.js';
 import Icon from 'ol/style/Icon.js';
-import { API_BASE_URL } from './config.js';
+import { API_BASE_URL,WS } from './config.js';
 
 import ImageTile from 'ol/source/ImageTile.js';
 import VectorSource from 'ol/source/Vector.js';
@@ -78,6 +78,7 @@ function renderShipArray(data) {
     tableShip.tbody.appendChild(r);
     return;
   }
+  console.log(data);
   data.forEach(item => {
     const row = tableShip.createRow()
     const div1 = document.createElement("div")
@@ -93,22 +94,13 @@ function renderShipArray(data) {
 
     const div3 = document.createElement("div")
     div3.className = "col";
-    div3.textContent = (Number(item.statuss)===1)?"Hoạt động":"Cập Bến";
+    if(Number(item.sos)===1){
+  div3.textContent = "SOS"
+  div3.style.color="red"
+    }else{
+      div3.textContent = (Number(item.statuss)===1)?"Hoạt động":"Cập Bến";
+    }
     row.appendChild(div3)
-
-    const div4 = document.createElement("div")
-    div4.className = "col";
-    const button = document.createElement("button")
-    button.className = "btn btn-primary col d-flex align-items-center justify-content-center";
-    button.dataset.id = item.Id || item.id || '';
-    const img = document.createElement('img');
-    img.src = '/documnet.svg';
-    img.alt = 'xem';
-    img.style.width = '20px'; img.style.height='20px'; img.style.objectFit='contain';
-    button.appendChild(img);
-    button.addEventListener("click", () => showChuyenBienOnclick(item.id || item.Id));
-    div4.appendChild(button)
-    row.appendChild(div4)
 
     tableShip.tbody.appendChild(row)
   })
@@ -1192,7 +1184,7 @@ useGeographic();
 
 // Kết nối đến server WebSocket
 //const ws = new WebSocket('ws://161.248.147.115:8080');
-const ws = new WebSocket('ws://171.244.40.86:8080');
+const ws = new WebSocket(WS);
 
 // Tham chiếu modal
 

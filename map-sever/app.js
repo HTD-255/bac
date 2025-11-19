@@ -64,7 +64,15 @@ const formatCoord = (v) => {
 
 const wsPort = process.env.WS_PORT ? parseInt(process.env.WS_PORT, 10) : 8080;
 const wss = new WebSocket.Server({ port: wsPort });
-connectToDb();
+
+// Track database connection status
+let dbConnected = false;
+
+connectToDb().then(() => {
+  dbConnected = true;
+}).catch(() => {
+  dbConnected = false;
+});
 
 wss.on('connection', ws => {
   console.log('Client đã kết nối.');
@@ -87,7 +95,7 @@ wss.on('connection', ws => {
 
 
 
-app.use(cors({ origin: ['http://161.248.147.115', 'http://171.244.40.86'] }));
+app.use(cors({ origin: ['http://161.248.147.115', 'http://171.244.40.86', 'http://127.0.0.1:5173', 'http://localhost:5173', 'http://localhost:5174', 'http://localhost:3000'] }));
 // Parse JSON bodies
 app.use(express.json());
 app.get('/api/ship',async(req,res)=>{
@@ -759,6 +767,48 @@ app.get('/api/thong-tin-chuyen-bien', async (req, res) => {
   }
 });
 
+
+// API: lấy danh sách chuyến biển theo năm và id tàu
+app.get('/api/chuyen-bien-by-year-ship', async (req, res) => {
+  try {
+    const idShip = req.query.id_ship ? String(req.query.id_ship).trim() : '';
+    const year = req.query.year ? parseInt(req.query.year, 10) : new Date().getFullYear();
+
+    if (!idShip) {
+      return res.status(400).json({ success: false, message: 'Thiếu id_ship' });
+    }
+
+    const request = new sql.Request();
+    request.input('id_ship', sql.NVarChar, idShip);
+    request.input('year', sql.Int, year);
+
+    // Query để lấy chuyến biển của tàu trong năm đó
+    const query = `
+      SELECT 
+        cb.id,
+        cb.id_ship,
+        cb.thoi_gian_di,
+        cb.thoi_gian_ve,
+        cb.thoi_gian_nop,
+        cb.cang_di,
+        cb.cang_ve,
+        cb.vao_so,
+        cb.ngay_nhatky,
+        YEAR(cb.thoi_gian_di) as nam_di,
+        YEAR(cb.thoi_gian_ve) as nam_ve
+      FROM dbo.chuyen_bien cb
+      WHERE cb.id_ship = @id_ship
+        AND (YEAR(cb.thoi_gian_di) = @year OR YEAR(cb.thoi_gian_ve) = @year)
+      ORDER BY cb.thoi_gian_di DESC
+    `;
+
+    const result = await request.query(query);
+    res.json({ success: true, data: result.recordset || [] });
+  } catch (error) {
+    console.error('Error in /api/chuyen-bien-by-year-ship:', error);
+    res.status(500).json({ success: false, message: 'Internal Server Error', error: error.message });
+  }
+});
 
 app.get('/api/login', (req, res) => {
   const { username, password } = req.query;
