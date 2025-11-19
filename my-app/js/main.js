@@ -1709,6 +1709,7 @@ window.addEventListener('DOMContentLoaded', () => {
         return r.json();
       })
       .then(shipsData => {
+        console.log(shipsData);
         console.log('Initial ships loaded:', shipsData.length);
         // Draw all ships on initial load
         drawShips(shipsData);
